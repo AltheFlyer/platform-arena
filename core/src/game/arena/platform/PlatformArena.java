@@ -1,6 +1,6 @@
 package game.arena.platform;
 
-import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -24,20 +25,28 @@ public class PlatformArena extends ApplicationAdapter {
 	OrthographicCamera camera;
 	ShapeRenderer render;
 	Array<Rectangle> platforms;
-	Array<Projectile> projectiles = new Array<Projectile>();
+	Array<Projectile> projectiles;
+	Array<Enemy> enemies;
+	final int ARENA_WIDTH = 800;
+	final int ARENA_HEIGHT = 600;
 
 	@Override
 	public void create() {
 		player = new Knight();
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 600);
+		camera.setToOrtho(false, ARENA_WIDTH, ARENA_HEIGHT);
 
 		render = new ShapeRenderer();
 		render.setAutoShapeType(true);
 
 		platforms = new Array<Rectangle>();
+		//Default level
 		initializePlatforms();
+		
+		projectiles = new Array<Projectile>();
+		enemies = new Array<Enemy>();
+		enemies.add(new DummyEnemy(400, 400));
 	}
 
 	@Override
@@ -65,25 +74,31 @@ public class PlatformArena extends ApplicationAdapter {
 		for (Projectile p : projectiles) {
 			render.circle(p.x, p.y, 3);
 		}
+		
+		//Draw enemies
+		render.setColor(Color.RED);
+		for (Enemy e: enemies) {
+			render.box(e.x, e.y, 0, 50, 100, 0);
+		}
 		render.end();
 
 		move();
 
 		platformCollisions();
 		
-		
-		// Attacking:
-		if (Gdx.input.isTouched()) {
-			Vector3 Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
-			float deltaX = MathUtils.cos(MathUtils.atan2(Mouse.y - (player.y + 50), Mouse.x - (player.x + 25)));
-			float deltaY = MathUtils.sin(MathUtils.atan2(Mouse.y - (player.y + 50), Mouse.x - (player.x + 25)));
-			projectiles.add(new PotionProjectile(player.x + 25, player.y + 50, deltaX, deltaY, 0, 0));
+		//Enemy stuff
+		for (Enemy e: enemies) {
+			e.move();
+			for (Projectile p: projectiles) {
+				if (new Rectangle(e.x, e.y, 50, 100).contains(new Vector2(p.x, p.y))) {
+					p.destroy = true;
+					e.damage(p.damage);
+				}
+			}
 		}
 		
-		// Projectiles moving:
-		for (Projectile p : projectiles) {
-			p.move();
-		}
+		doProjectileStuff();
+		
 
 	}
 
@@ -159,6 +174,37 @@ public class PlatformArena extends ApplicationAdapter {
 				player.yMove = 0;
 				player.y = platform.y;
 				player.onGround = true;
+			}
+		}
+	}
+	
+	public void doProjectileStuff() {
+		// Attacking:
+		if (Gdx.input.isTouched()) {
+			Vector3 Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
+			//degrees
+			float angle = MathUtils.atan2(Mouse.y - (player.y + 50), Mouse.x - (player.x + 25));
+			projectiles.add(new BasicProjectile(player.x + 25, player.y + 50, angle));
+			projectiles.add(new PotionProjectile(player.x + 25, player.y + 50, angle));
+			projectiles.add(new BurstProjectile(player.x + 25, player.y + 50, angle));
+		}
+		
+		//Projectile work
+		for (Projectile p : projectiles) {
+			// Projectiles moving:
+			p.move();
+			//Mark projectiles for removal
+			if (p.x < 0 || p.x > ARENA_WIDTH || p.y > ARENA_HEIGHT || p.y < 0 || p.checkAge()) {
+				p.destroy = true;
+			}
+		}
+		
+		//The removal code
+		Iterator<Projectile> iter = projectiles.iterator();
+		while (iter.hasNext()) {
+			Projectile p = iter.next();
+			if (p.destroy) {
+				iter.remove();
 			}
 		}
 	}

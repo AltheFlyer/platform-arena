@@ -18,4 +18,7 @@ public class Character {
 		onGround = false;
 	}
 	
+	public void attack() {
+		
+	}
 }
