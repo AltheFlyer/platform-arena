@@ -1,11 +1,11 @@
 package game.arena.platform;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 
 public abstract class Projectile {
 
-	float x;
-	float y;
+	Rectangle hitbox;
 	float xMove;
 	float yMove;
 	float speed;
@@ -13,10 +13,11 @@ public abstract class Projectile {
 	float maxAge;
 	float damage;
 	boolean destroy;
-
-	public Projectile(float x1, float y1, float xV, float yV, float spd, float a, float maxA, float dmg) {
-		x = x1;
-		y = y1;
+	
+	//Default hitbox
+	public Projectile(float x1, float y1, float xV, float yV, 
+			float spd, float a, float maxA, float dmg) {
+		hitbox = new Rectangle(x1, y1, 3, 3);
 		speed = spd;
 		xMove = xV * speed;
 		yMove = yV * speed;
@@ -26,9 +27,22 @@ public abstract class Projectile {
 		damage = dmg;
 	}
 	
-	public void move() {
-		x += xMove * Gdx.graphics.getDeltaTime();
-		y += yMove * Gdx.graphics.getDeltaTime();
+	//Predefined hitbox
+	public Projectile(float x1, float y1, float w, float h, float xV, float yV, 
+			float spd, float a, float maxA, float dmg) {
+		hitbox = new Rectangle(x1, y1, w, h);
+		speed = spd;
+		xMove = xV * speed;
+		yMove = yV * speed;
+		age = a;
+		maxAge = maxA;
+		destroy = false;
+		damage = dmg;
+	}
+	
+	public void move(float frame) {
+		hitbox.x += xMove * frame;
+		hitbox.y += yMove * frame;
 		age += Gdx.graphics.getDeltaTime();
 	}
 	
