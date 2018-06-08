@@ -76,7 +76,7 @@ public class PlatformArena extends ApplicationAdapter {
 		// Draw projectiles
 		render.setColor(Color.BLACK);
 		for (Projectile p : projectiles) {
-			render.circle(p.hitbox.x, p.hitbox.y, p.hitbox.width);
+			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
 		}
 
 		// Draw enemies
