@@ -7,8 +7,8 @@ public class Character {
 	Rectangle hitbox;
 	float xMove, yMove;
 	float yLast;
-	float cooldown;
 	float primaryCooldown;
+	final float PRIMARY_COOLDOWN;
 	boolean onGround;
 	boolean hasCollided;
 	
@@ -17,8 +17,8 @@ public class Character {
 		yLast = y1;
 		xMove = 0;
 		yMove = 0;
-		cooldown = 0;
-		primaryCooldown = pCD;
+		primaryCooldown = 0;
+		PRIMARY_COOLDOWN = pCD;
 		onGround = false;
 	}
 	
