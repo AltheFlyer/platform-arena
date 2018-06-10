@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -40,6 +41,11 @@ public class PlatformArena extends ApplicationAdapter {
 	final int ARENA_WIDTH = 800;
 	final int ARENA_HEIGHT = 600;
 	float frame;
+	Vector3 Mouse;
+	float meleeCooldown;
+	final float MELEE_TIMER = 1;
+	Rectangle damage;
+	boolean isLeft;
 
 	@Override
 	public void create() {
@@ -61,6 +67,9 @@ public class PlatformArena extends ApplicationAdapter {
 		enemies.add(new SeekerEnemy(300, 300));
 		player.primaryCooldown = 0;
 		frame = 0;
+		meleeCooldown = 0;
+		damage = new Rectangle(0, 0, 0, 0);
+		isLeft = false;
 		
 		//Collectibles
 		stars = new Array<Star>();
@@ -78,7 +87,8 @@ public class PlatformArena extends ApplicationAdapter {
 		
 		frame = Gdx.graphics.getDeltaTime();
 		if (frame > 0.3f) frame = 0.3f;
-
+		Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
+		
 		move();
 
 		platformCollisions();
@@ -92,6 +102,35 @@ public class PlatformArena extends ApplicationAdapter {
 			s.collect(player.hitbox);
 			s.spawn(frame);
 		}
+		
+		//Melee attack?
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT) && meleeCooldown <= 0) {
+			if (Mouse.x < player.hitbox.x) {
+				damage = new Rectangle(player.hitbox.x - 125, player.hitbox.y, 150, 150);
+				for (Enemy e: enemies) {
+					if (damage.overlaps(e.hitbox)) {
+						e.damage(5);
+					}
+				}
+				isLeft = true;
+			} else {
+				damage = new Rectangle(player.hitbox.x + 25, player.hitbox.y, 150, 150);
+				for (Enemy e: enemies) {
+					if (damage.overlaps(e.hitbox)) {
+						e.damage(5);
+					}
+				}
+				isLeft = false;
+			}
+			meleeCooldown = MELEE_TIMER;
+		}
+		if (meleeCooldown > 0) {
+			meleeCooldown -= frame;
+		}
+		if (meleeCooldown < 0) {
+			meleeCooldown = 0;
+		}
+		
 		
 		// DEBUG//
 		// System.out.println(player.y);
@@ -138,6 +177,14 @@ public class PlatformArena extends ApplicationAdapter {
 			if (!s.collected) {
 				render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
 			}
+		}
+		
+		//Experimental melee
+		render.setColor(Color.GRAY);
+		if (meleeCooldown > 0.8f && isLeft) {
+			render.arc(damage.x + 150, damage.y, 150, 90, 90);
+		} else if (meleeCooldown > 0.8f && !isLeft) {
+			render.arc(damage.x, damage.y, 150, 90, -90, 10);
 		}
 		
 		render.end();
@@ -242,8 +289,7 @@ public class PlatformArena extends ApplicationAdapter {
 	
 	public void doProjectileStuff() {
 		// Attacking:
-		if (Gdx.input.isTouched() && player.primaryCooldown == 0) {
-			Vector3 Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
+		if (Gdx.input.isButtonPressed(Buttons.LEFT) && player.primaryCooldown == 0) {
 			// degrees
 			float angle = MathUtils.atan2(Mouse.y - (player.hitbox.y + 50), Mouse.x - (player.hitbox.x + 25));
 			projectiles.add(new BasicProjectile(player.hitbox.x + 25, player.hitbox.y + 50, angle));
