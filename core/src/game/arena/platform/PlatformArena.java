@@ -46,7 +46,10 @@ public class PlatformArena extends ApplicationAdapter {
 	final float MELEE_TIMER = 1;
 	Rectangle damage;
 	boolean isLeft;
-
+	float jumpTime = 0.2f;
+	final float MAX_JUMP_TIME= 0.2f;
+	boolean jumping;
+	
 	@Override
 	public void create() {
 		player = new Knight();
@@ -196,25 +199,23 @@ public class PlatformArena extends ApplicationAdapter {
 		// Some of this will be moved to the character class
 		// Gravity
 		float deltaY = 0;
-		// if (!player.onGround)
-		deltaY -= 120 * frame;
-		// If the up key is help while jumping
-		// Jump a bit higher
-		// if (!player.onGround && Gdx.input.isKeyPressed(Keys.W) && player.yMove > 0) {
-		// deltaY += player.yMove * frame * 2.8;
-		// }
-		// Still not sure how to fine tune this one
-		player.yMove += deltaY;
-		if (player.yMove < -30)
-			player.yMove = -30;
+
+		deltaY -= 120;
 
 		// Jumping
 		if (player.onGround && Gdx.input.isKeyJustPressed(Keys.W)) {
-			player.yMove = 30;
+			deltaY = 1350;
 			player.onGround = false;
+			jumping = true;
 		}
-		player.hitbox.y += player.yMove;
-
+		System.out.println(Gdx.graphics.getFramesPerSecond());
+		
+		player.yMove += deltaY;
+		if (player.yMove < -1350)
+			player.yMove = -1350;
+		
+		player.hitbox.y += player.yMove * frame;		
+		
 		// Horizontal movement
 		if (Gdx.input.isKeyPressed(Keys.A)) {
 			player.hitbox.x -= 400 * frame;
@@ -233,6 +234,8 @@ public class PlatformArena extends ApplicationAdapter {
 			player.hitbox.y = 0;
 			player.yMove = 0;
 			player.onGround = true;
+			jumping = false;
+			jumpTime = MAX_JUMP_TIME;
 		}
 		if (player.hitbox.x < 0) {
 			player.hitbox.x = 0;
@@ -253,6 +256,8 @@ public class PlatformArena extends ApplicationAdapter {
 				player.yMove = 0;
 				player.hitbox.y = platform.y;
 				player.onGround = true;
+				jumping = false;
+				jumpTime = MAX_JUMP_TIME;
 			}
 		}
 	}
