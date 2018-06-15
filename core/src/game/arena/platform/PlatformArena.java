@@ -46,9 +46,14 @@ public class PlatformArena extends ApplicationAdapter {
 	final float MELEE_TIMER = 1;
 	Rectangle damage;
 	boolean isLeft;
-	float jumpTime = 0.2f;
-	final float MAX_JUMP_TIME= 0.2f;
-	boolean jumping;
+	//Time to TLAP
+	//Max jump height will be slightly over this times 10
+	float maxJumpHeight;
+	float minJumpHeight;
+	float maxJumpTime;
+	float minJumpVelocity;
+	float jumpVelocity;
+	float gravity;
 	
 	@Override
 	public void create() {
@@ -77,6 +82,15 @@ public class PlatformArena extends ApplicationAdapter {
 		//Collectibles
 		stars = new Array<Star>();
 		initializeStars();
+		
+		//The big 5
+		maxJumpHeight = 20;
+		minJumpHeight = 2.5f;
+		maxJumpTime = 0.35f;
+		gravity = (2 * maxJumpHeight) / (maxJumpTime * maxJumpTime);
+		jumpVelocity = gravity * maxJumpTime;
+		minJumpVelocity = (float) Math.sqrt(2 * gravity * minJumpHeight);
+		System.out.println(gravity + " " + jumpVelocity);
 	}
 
 	@Override
@@ -136,7 +150,7 @@ public class PlatformArena extends ApplicationAdapter {
 		
 		
 		// DEBUG//
-		// System.out.println(player.y);
+		// //System.out.println(player.y);
 	}
 
 	@Override
@@ -198,23 +212,21 @@ public class PlatformArena extends ApplicationAdapter {
 		// Movement
 		// Some of this will be moved to the character class
 		// Gravity
-		float deltaY = 0;
-
-		deltaY -= 120;
-
+		
+		player.yMove -= gravity * frame;
+		
 		// Jumping
 		if (player.onGround && Gdx.input.isKeyJustPressed(Keys.W)) {
-			deltaY = 1350;
+			player.yMove = jumpVelocity;
 			player.onGround = false;
-			jumping = true;
 		}
-		System.out.println(Gdx.graphics.getFramesPerSecond());
+		if (!Gdx.input.isKeyPressed(Keys.W)) {
+			if (player.yMove > minJumpVelocity) {
+				player.yMove = minJumpVelocity;
+			}
+		}
 		
-		player.yMove += deltaY;
-		if (player.yMove < -1350)
-			player.yMove = -1350;
-		
-		player.hitbox.y += player.yMove * frame;		
+		player.hitbox.y += 10 * player.yMove * frame;		
 		
 		// Horizontal movement
 		if (Gdx.input.isKeyPressed(Keys.A)) {
@@ -234,8 +246,6 @@ public class PlatformArena extends ApplicationAdapter {
 			player.hitbox.y = 0;
 			player.yMove = 0;
 			player.onGround = true;
-			jumping = false;
-			jumpTime = MAX_JUMP_TIME;
 		}
 		if (player.hitbox.x < 0) {
 			player.hitbox.x = 0;
@@ -256,8 +266,6 @@ public class PlatformArena extends ApplicationAdapter {
 				player.yMove = 0;
 				player.hitbox.y = platform.y;
 				player.onGround = true;
-				jumping = false;
-				jumpTime = MAX_JUMP_TIME;
 			}
 		}
 	}
@@ -275,7 +283,7 @@ public class PlatformArena extends ApplicationAdapter {
 		}
 		
 		//DEBUG//
-		System.out.println(enemies.size);
+		//System.out.println(enemies.size);
 
 		// Remove dead enemies
 		Iterator<Enemy> e = enemies.iterator();
