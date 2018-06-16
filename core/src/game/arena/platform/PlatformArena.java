@@ -65,8 +65,13 @@ public class PlatformArena extends ApplicationAdapter {
 	float jumpVelocity;
 	float gravity;
 	
+	//***************DEBUG***************//
+	boolean sprites;
+	
 	@Override
 	public void create() {
+		sprites = true;
+		
 		//Initialize player
 		player = new Knight();
 		
@@ -94,7 +99,7 @@ public class PlatformArena extends ApplicationAdapter {
 		initializeStars();
 
 		//Load enemies (for now)
-		enemies.add(new DummyEnemy(300, 450));
+		enemies.add(new DummyEnemy(375, 450));
 		enemies.add(new SeekerEnemy(300, 300));
 		
 		//Initialize time count
@@ -197,19 +202,34 @@ public class PlatformArena extends ApplicationAdapter {
 	}
 
 	public void draw() {
+		//***************DEBUG***************//
+		if (Gdx.input.isKeyJustPressed(Keys.Q)) {
+			sprites = !sprites;
+		}
+		
 		render.begin();
-		// Draw player
 		render.set(ShapeType.Filled);
+		// Draw player
+		if (!sprites) {
 		render.setColor(Color.GREEN);
 		render.box(player.hitbox.x, player.hitbox.y, 0, player.hitbox.width, player.hitbox.height, 0);
 	
-		// Draw platforms
-		//render.set(ShapeType.Filled);
-		//render.setColor(Color.BROWN);
-		//for (Rectangle platform : platforms) {
-		//	render.box(platform.x, platform.y, 0, platform.width, platform.height, 0);
-		//}
+		//Draw platforms
+		render.set(ShapeType.Filled);
+		render.setColor(Color.BROWN);
+		for (Rectangle platform : platforms) {
+			render.box(platform.x, platform.y, 0, platform.width, platform.height, 0);
+		}
 	
+		//Draw stars
+		render.setColor(Color.GOLD);
+		for (Star s: stars) {
+			if (!s.collected) {
+				render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
+			}
+		}
+		}
+		
 		// Draw projectiles
 		render.setColor(Color.BLACK);
 		for (Projectile p : projectiles) {
@@ -222,16 +242,6 @@ public class PlatformArena extends ApplicationAdapter {
 			render.box(e.hitbox.x, e.hitbox.y, 0, e.hitbox.width, e.hitbox.height, 0);
 		}
 		
-		//Draw stars
-		/*
-		render.setColor(Color.GOLD);
-		for (Star s: stars) {
-			if (!s.collected) {
-				render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
-			}
-		}
-		*/
-		
 		//Experimental melee
 		render.setColor(Color.GRAY);
 		if (meleeCooldown > 0.8f && isLeft) {
@@ -242,6 +252,7 @@ public class PlatformArena extends ApplicationAdapter {
 		
 		render.end();
 		
+		if (sprites) {
 		batch.begin();
 		
 		//Platform sprites
@@ -256,7 +267,11 @@ public class PlatformArena extends ApplicationAdapter {
 			}
 		}
 		
+		//Player sprite
+		batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
+		
 		batch.end();
+		}
 	}
 
 	public void move() {
@@ -326,7 +341,7 @@ public class PlatformArena extends ApplicationAdapter {
 	public void platformCollisions() {
 		// Collisions
 		//***************DEBUG***************//
-		System.out.println(player.yLast + " " + player.hitbox.y);
+		//System.out.println(player.yLast + " " + player.hitbox.y);
 		
 		for (Rectangle platform : platforms) {
 			//Check if:
