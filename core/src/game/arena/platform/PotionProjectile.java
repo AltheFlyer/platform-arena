@@ -10,7 +10,8 @@ public class PotionProjectile extends Projectile{
 	}
 	
 	public void move(float frame) {
-		yMove -= 400 * Gdx.graphics.getDeltaTime();
+		//Gravity
+		yMove -= 400 * frame;
 		super.move(frame);
 	}
 	
