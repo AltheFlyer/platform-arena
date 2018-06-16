@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-//import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.MathUtils;
@@ -30,12 +30,14 @@ import com.badlogic.gdx.utils.Array;
  */
 public class PlatformArena extends ApplicationAdapter {
 
-	Texture img;
+	Texture platformSprite;
+	Texture starSprite;
 	Character player;
 	
 	//Used for rendering
 	OrthographicCamera camera;
 	ShapeRenderer render;
+	SpriteBatch batch;
 	
 	Array<Rectangle> platforms;
 	Array<Projectile> projectiles;
@@ -76,6 +78,11 @@ public class PlatformArena extends ApplicationAdapter {
 		//Set to shape until sprites happen
 		render = new ShapeRenderer();
 		render.setAutoShapeType(true);
+		batch = new SpriteBatch();
+		
+		//Initialize images
+		platformSprite = new Texture("platform.png");
+		starSprite = new Texture("star15x15.png");
 		
 		//Initialize Lists
 		platforms = new Array<Rectangle>();
@@ -118,6 +125,7 @@ public class PlatformArena extends ApplicationAdapter {
 		//Prepare camera for drawing
 		camera.update();
 		render.setProjectionMatrix(camera.combined);
+		batch.setProjectionMatrix(camera.combined);
 		draw();
 		
 		//Calculating frame
@@ -179,8 +187,10 @@ public class PlatformArena extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
-		// batch.dispose();
+		batch.dispose();
 		render.dispose();
+		starSprite.dispose();
+		platformSprite.dispose();
 		platforms.clear();
 		enemies.clear();
 		stars.clear();
@@ -194,11 +204,11 @@ public class PlatformArena extends ApplicationAdapter {
 		render.box(player.hitbox.x, player.hitbox.y, 0, player.hitbox.width, player.hitbox.height, 0);
 	
 		// Draw platforms
-		render.set(ShapeType.Filled);
-		render.setColor(Color.BROWN);
-		for (Rectangle platform : platforms) {
-			render.box(platform.x, platform.y, 0, platform.width, platform.height, 0);
-		}
+		//render.set(ShapeType.Filled);
+		//render.setColor(Color.BROWN);
+		//for (Rectangle platform : platforms) {
+		//	render.box(platform.x, platform.y, 0, platform.width, platform.height, 0);
+		//}
 	
 		// Draw projectiles
 		render.setColor(Color.BLACK);
@@ -213,12 +223,14 @@ public class PlatformArena extends ApplicationAdapter {
 		}
 		
 		//Draw stars
+		/*
 		render.setColor(Color.GOLD);
 		for (Star s: stars) {
 			if (!s.collected) {
 				render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
 			}
 		}
+		*/
 		
 		//Experimental melee
 		render.setColor(Color.GRAY);
@@ -229,6 +241,22 @@ public class PlatformArena extends ApplicationAdapter {
 		}
 		
 		render.end();
+		
+		batch.begin();
+		
+		//Platform sprites
+		for (Rectangle platform : platforms) {
+			batch.draw(platformSprite, platform.x, platform.y - 10);
+		}
+		
+		//Star sprites
+		for (Star s: stars) {
+			if (!s.collected) {
+				batch.draw(starSprite, s.hitbox.x, s.hitbox.y);
+			}
+		}
+		
+		batch.end();
 	}
 
 	public void move() {
