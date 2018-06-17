@@ -1,5 +1,6 @@
 package game.arena.platform;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -17,6 +18,7 @@ public class Enemy {
 	float yMove;
 	float health;
 	boolean destroy;
+	Texture sprite;
 	//More to come
 	
 	/**
@@ -34,6 +36,8 @@ public class Enemy {
 		yMove = yV;
 		health = hp;
 		destroy = false;
+		//By default, do not use
+		sprite = new Texture("question_mark50x100.png");
 	}
 	
 	public void move(float frame) {
@@ -55,5 +59,9 @@ public class Enemy {
 	public void damage(float damage) {
 		health -= damage;
 		if (health <= 0) destroy = true;
+	}
+	
+	public Texture getState(){
+		return sprite;
 	}
 }

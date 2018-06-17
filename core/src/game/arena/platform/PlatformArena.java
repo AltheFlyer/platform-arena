@@ -68,7 +68,7 @@ public class PlatformArena extends ApplicationAdapter {
 	// ***************DEBUG***************//
 	boolean sprites;
 	boolean paused;
-
+	
 	//Enemy Waves
 	ObjectMap<Enemy, Float> waves;
 	//Global timer
@@ -91,12 +91,12 @@ public class PlatformArena extends ApplicationAdapter {
 		render = new ShapeRenderer();
 		render.setAutoShapeType(true);
 		batch = new SpriteBatch();
-	
-		//Initialize images
+
+		// Initialize images
 		platformSprite = new Texture("platform.png");
 		starSprite = new Texture("star15x15.png");
-		
-		//Initialize Lists
+
+		// Initialize Lists
 		platforms = new Array<Rectangle>();
 		stars = new Array<Star>();
 		projectiles = new Array<Projectile>();
@@ -104,11 +104,6 @@ public class PlatformArena extends ApplicationAdapter {
 		// Default level
 		initializePlatforms();
 		initializeStars();
-
-
-		//Load enemies (for now)
-		enemies.add(new DummyEnemy(375, 450));
-		enemies.add(new SeekerEnemy(300, 300));
 		
 		//Enemy Waves
 		time = 0;
@@ -261,6 +256,12 @@ public class PlatformArena extends ApplicationAdapter {
 					render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
 				}
 			}
+			
+			// Draw enemies
+			render.setColor(Color.RED);
+			for (Enemy e : enemies) {
+				render.box(e.hitbox.x, e.hitbox.y, 0, e.hitbox.width, e.hitbox.height, 0);
+			}
 		}
 		
 		// Draw projectiles
@@ -269,13 +270,7 @@ public class PlatformArena extends ApplicationAdapter {
 			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
 		}
 
-		// Draw enemies
-		render.setColor(Color.RED);
-		for (Enemy e : enemies) {
-			render.box(e.hitbox.x, e.hitbox.y, 0, e.hitbox.width, e.hitbox.height, 0);
-		}
-      
-		//Experimental melee
+		// Experimental melee
 		render.setColor(Color.GRAY);
 		if (meleeCooldown > 0.8f && isLeft) {
 			render.arc(damage.x + 150, damage.y, 150, 90, 90);
@@ -292,14 +287,19 @@ public class PlatformArena extends ApplicationAdapter {
 			for (Rectangle platform : platforms) {
 				batch.draw(platformSprite, platform.x, platform.y - 10);
 			}
-
+			
+			//Enemy sprites
+			for (Enemy e: enemies) {
+				batch.draw(e.getState(), e.hitbox.x, e.hitbox.y);
+			}
+			
 			// Star sprites
 			for (Star s : stars) {
 				if (!s.collected) {
 					batch.draw(starSprite, s.hitbox.x, s.hitbox.y);
 				}
 			}
-
+			
 			// Player sprite
 			batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
 
@@ -373,9 +373,8 @@ public class PlatformArena extends ApplicationAdapter {
 
 	public void platformCollisions() {
 		// Collisions
-
-		//***************DEBUG***************//
-		//System.out.println(player.yLast + " " + player.hitbox.y);
+		// ***************DEBUG***************//
+		// System.out.println(player.yLast + " " + player.hitbox.y);
 
 		for (Rectangle platform : platforms) {
 			// Check if:
