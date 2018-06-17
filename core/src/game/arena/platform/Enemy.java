@@ -41,6 +41,12 @@ public class Enemy {
 		hitbox.y += yMove * frame;
 	}
 	
+	/**
+	 * 
+	 * @param x Player x
+	 * @param y Player y
+	 * @param frame time since last frame
+	 */
 	public void move(float x, float y, float frame) {
 		hitbox.x += xMove * frame;
 		hitbox.y += yMove * frame;
