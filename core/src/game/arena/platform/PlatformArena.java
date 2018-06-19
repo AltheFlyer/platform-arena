@@ -2,10 +2,10 @@ package game.arena.platform;
 
 import java.util.Iterator;
 
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,15 +21,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
- * A fun project to learn some more code stuffs. <br>
- * A platformer-arena style game where you try to not die from enemies while
- * trying to get collectibles.
- * 
- * @author Allen Liu
+ * A test level
  *
  */
-public class PlatformArena extends ApplicationAdapter {
-
+public class PlatformArena implements Screen {
+	
+	//Used for screen stuff
+	final Arena game;
+	
 	Texture platformSprite;
 	Texture starSprite;
 	Character player;
@@ -74,8 +73,8 @@ public class PlatformArena extends ApplicationAdapter {
 	//Global timer
 	float time;
 
-	@Override
-	public void create() {
+	public PlatformArena(final Arena game) {
+		this.game = game;
 		sprites = true;
 		paused = false;
 
@@ -101,14 +100,10 @@ public class PlatformArena extends ApplicationAdapter {
 		stars = new Array<Star>();
 		projectiles = new Array<Projectile>();
 		enemies = new Array<Enemy>();
-		// Default level
-		initializePlatforms();
-		initializeStars();
 		
 		//Enemy Waves
 		time = 0;
 		waves = new ObjectMap<Enemy, Float>();
-		initializeWaves();
 		
 		// Load enemies (for now)
 		enemies.add(new DummyEnemy(375, 450));
@@ -132,9 +127,17 @@ public class PlatformArena extends ApplicationAdapter {
 		// ***************DEBUG***************//
 		System.out.println(gravity + " " + jumpVelocity);
 	}
-
+	
+	//Because i need this separate to prevent crashes
+	public void init() {
+		// Default level
+		initializePlatforms();
+		initializeStars();
+		initializeWaves();
+	}
+	
 	@Override
-	public void render() {
+	public void render(float delta) {
 		// Clear the screen
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -521,5 +524,35 @@ public class PlatformArena extends ApplicationAdapter {
 		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2 + 50), 16f);
 		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2), 16f);
 		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2 - 50), 16f);
+	}
+
+	@Override
+	public void show() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void hide() {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,6 +1,5 @@
 package game.arena.platform;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
