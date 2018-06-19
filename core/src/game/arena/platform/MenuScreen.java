@@ -4,17 +4,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class MenuScreen implements Screen{
 	
 	Arena game;
 	OrthographicCamera camera;
+	Texture button;
+	Texture glowButton;
+	Vector3 Mouse;
+	
+	//Buttons
+	//Start Level
+	Rectangle levelStart;
 	
 	public MenuScreen(final Arena game) {
 		this.game = game;
 		
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 600);
+		button = new Texture("normal_box.png");
+		glowButton = new Texture("glow_box.png");
+		
+		//Buttons are 210px x 75px
+		levelStart = new Rectangle(295, 263, 210, 75);
 	}
 	
 	@Override
@@ -30,16 +46,26 @@ public class MenuScreen implements Screen{
 		
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
-		game.render.setProjectionMatrix(camera.combined);
 		
-		game.render.begin();
+		//Set mouse
+		Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
 		
-		game.render.end();
+		game.batch.begin();
 		
-		if (Gdx.input.isTouched()) {
-			game.setScreen(new TestLevel(game));
-			dispose();
+		//Start level button (to be changed)
+		if (levelStart.contains(Mouse.x, Mouse.y)) {
+			//Draw glowing button
+			game.batch.draw(glowButton, levelStart.x, levelStart.y);
+			//Set to level if clicking
+			if (Gdx.input.isTouched()) {
+				game.setScreen(new TestLevel(game));
+				dispose();
+			}
+		} else {
+			//Normal button
+			game.batch.draw(button, levelStart.x, levelStart.y);
 		}
+		game.batch.end();
 		
 	}
 
