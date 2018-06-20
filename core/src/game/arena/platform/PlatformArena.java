@@ -385,6 +385,7 @@ public class PlatformArena implements Screen {
 			e.move(player.hitbox.x, player.hitbox.y, frame);
 			if (e.hitbox.y < 0) {
 				e.hitbox.y = 0;
+				e.onGround = true;
 			}
 			// Enemy-projectile collision
 			for (Projectile p : projectiles) {
@@ -446,10 +447,11 @@ public class PlatformArena implements Screen {
 			
 			//Enemy checks
 			for (Enemy e: enemies) {
-				if (e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
+				if (!e.flying && e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
 						&& e.yLast >= platform.y && e.hitbox.y < platform.y) {
 					e.yMove = 0;
 					e.hitbox.y = platform.y;
+					e.onGround = true;
 				}
 			}
 		}

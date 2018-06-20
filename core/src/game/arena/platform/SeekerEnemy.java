@@ -9,11 +9,12 @@ public class SeekerEnemy extends Enemy {
 	public SeekerEnemy(float x1, float y1) {
 		super(x1, y1, 25, 25, 0, 0, 10);
 		sprite = new Texture("seeker_enemy.png");
+		flying = true;
 	}
 	
+	//I'm going to assume this doesn't break anything
 	public SeekerEnemy(Vector2 pos) {
-		super(pos.x, pos.y, 25, 25, 0, 0, 10);
-		sprite = new Texture("seeker_enemy.png");
+		this(pos.x, pos.y);
 	}
 	
 	public void move(float x, float y, float frame) {

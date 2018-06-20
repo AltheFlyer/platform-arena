@@ -19,6 +19,8 @@ public class Enemy {
 	float yLast;
 	float health;
 	boolean destroy;
+	boolean onGround;
+	boolean flying;
 	Texture sprite;
 	//More to come
 	
@@ -38,6 +40,8 @@ public class Enemy {
 		yMove = yV;
 		health = hp;
 		destroy = false;
+		onGround = false;
+		flying = false;
 		//By default, do not use
 		sprite = new Texture("question_mark50x100.png");
 	}
