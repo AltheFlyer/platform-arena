@@ -162,10 +162,10 @@ public class PlatformArena implements Screen {
 
 		if (!paused) {
 			move();
+			
+			enemyStuff();
 
 			platformCollisions();
-
-			enemyStuff();
 
 			doProjectileStuff();
 
@@ -378,30 +378,14 @@ public class PlatformArena implements Screen {
 		}
 	}
 
-	public void platformCollisions() {
-		// Collisions
-		// ***************DEBUG***************//
-		// System.out.println(player.yLast + " " + player.hitbox.y);
-
-		for (Rectangle platform : platforms) {
-			// Check if:
-			// Player is above platform, but would drop below it
-			// Player looks like they could actually stand on the platform
-			if (player.hitbox.x + player.hitbox.width > platform.x && player.hitbox.x < platform.x + platform.width
-					&& player.yLast >= platform.y && player.hitbox.y < platform.y) {
-				player.yMove = 0;
-				player.hitbox.y = platform.y;
-				// This is needed due to how onGround checks are made
-				// Should not be necessary but i dunno
-				player.onGround = true;
-			}
-		}
-	}
-
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
+			e.yMove -= gravity * frame;
 			e.move(player.hitbox.x, player.hitbox.y, frame);
+			if (e.hitbox.y < 0) {
+				e.hitbox.y = 0;
+			}
 			// Enemy-projectile collision
 			for (Projectile p : projectiles) {
 				if (e.hitbox.overlaps(p.hitbox)) {
@@ -412,10 +396,10 @@ public class PlatformArena implements Screen {
 				}
 			}
 		}
-
+	
 		// ***************DEBUG***************//
 		// System.out.println(enemies.size);
-
+	
 		// Remove dead enemies
 		Iterator<Enemy> e = enemies.iterator();
 		while (e.hasNext()) {
@@ -440,6 +424,35 @@ public class PlatformArena implements Screen {
 			}
 		}
 		
+	}
+
+	public void platformCollisions() {
+		// Collisions
+		// ***************DEBUG***************//
+		// System.out.println(player.yLast + " " + player.hitbox.y);
+
+		for (Rectangle platform : platforms) {
+			// Check if:
+			// Player is above platform, but would drop below it
+			// Player looks like they could actually stand on the platform
+			if (player.hitbox.x + player.hitbox.width > platform.x && player.hitbox.x < platform.x + platform.width
+					&& player.yLast >= platform.y && player.hitbox.y < platform.y) {
+				player.yMove = 0;
+				player.hitbox.y = platform.y;
+				// This is needed due to how onGround checks are made
+				// Should not be necessary but i dunno
+				player.onGround = true;
+			}
+			
+			//Enemy checks
+			for (Enemy e: enemies) {
+				if (e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
+						&& e.yLast >= platform.y && e.hitbox.y < platform.y) {
+					e.yMove = 0;
+					e.hitbox.y = platform.y;
+				}
+			}
+		}
 	}
 
 	public void doProjectileStuff() {
@@ -512,7 +525,7 @@ public class PlatformArena implements Screen {
 	
 	public void initializeWaves() {
 		//Enemy of the day/week
-		waves.put(new GroundEnemy(0, 0), 0f);
+		waves.put(new GroundEnemy(0, 0), 1f);
 		
 		//From 4 corners
 		waves.put(new SeekerEnemy(0, 0), 10f);

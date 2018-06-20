@@ -16,6 +16,7 @@ public class Enemy {
 	Rectangle hitbox;
 	float xMove;
 	float yMove;
+	float yLast;
 	float health;
 	boolean destroy;
 	Texture sprite;
@@ -32,6 +33,7 @@ public class Enemy {
 	 */
 	public Enemy(float x1, float y1, float w, float h, float xV, float yV, float hp) {
 		hitbox = new Rectangle(x1, y1, w, h);
+		yLast = hitbox.y;
 		xMove = xV;
 		yMove = yV;
 		health = hp;
@@ -41,6 +43,7 @@ public class Enemy {
 	}
 	
 	public void move(float frame) {
+		yLast = hitbox.y;
 		hitbox.x += xMove * frame;
 		hitbox.y += yMove * frame;
 	}
@@ -52,6 +55,7 @@ public class Enemy {
 	 * @param frame time since last frame
 	 */
 	public void move(float x, float y, float frame) {
+		yLast = hitbox.y;
 		hitbox.x += xMove * frame;
 		hitbox.y += yMove * frame;
 	}

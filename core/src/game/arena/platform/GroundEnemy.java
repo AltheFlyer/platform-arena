@@ -18,6 +18,10 @@ public class GroundEnemy extends Enemy{
 		} else if (hitbox.x < x) {
 			xMove = 100;
 		}
+		//A little bit of padding room to prevent vibrating enemies
+		if (Math.abs(hitbox.x - x) < 10) {
+			xMove = 0;
+		}
 		super.move(frame);
 	}
 	
