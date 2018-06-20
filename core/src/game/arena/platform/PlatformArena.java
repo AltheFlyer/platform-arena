@@ -125,7 +125,7 @@ public class PlatformArena implements Screen {
 		jumpVelocity = gravity * maxJumpTime;
 		minJumpVelocity = (float) Math.sqrt(2 * gravity * minJumpHeight);
 		// ***************DEBUG***************//
-		System.out.println(gravity + " " + jumpVelocity);
+		//System.out.println(gravity + " " + jumpVelocity);
 	}
 	
 	//Because i need this separate to prevent crashes
@@ -208,6 +208,10 @@ public class PlatformArena implements Screen {
 
 			// DEBUG//
 			// //System.out.println(player.y);
+			
+			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+				game.setScreen(new MenuScreen(game));
+			}
 		}
 	}
 

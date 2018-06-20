@@ -1,6 +1,7 @@
 package game.arena.platform;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,9 +18,12 @@ public class MenuScreen implements Screen{
 	Texture glowButton;
 	Vector3 Mouse;
 	
+	//Debug
+	float debugX, debugY;
+	
 	//Buttons
 	//Start Level
-	Rectangle levelStart;
+	Rectangle levelStart, instructions;
 	
 	public MenuScreen(final Arena game) {
 		this.game = game;
@@ -31,6 +35,11 @@ public class MenuScreen implements Screen{
 		
 		//Buttons are 210px x 75px
 		levelStart = new Rectangle(295, 263, 210, 75);
+		instructions = new Rectangle(295, 178, 210, 75);
+		
+		//Debug
+		debugX = 100;
+		debugY = 100;
 	}
 	
 	@Override
@@ -65,6 +74,41 @@ public class MenuScreen implements Screen{
 			//Normal button
 			game.batch.draw(button, levelStart.x, levelStart.y);
 		}
+		game.font.draw(game.batch, "Test Level", 327, 312);
+
+		//Instructions button
+		if (instructions.contains(Mouse.x, Mouse.y)) {
+			//Draw glowing button
+			game.batch.draw(glowButton, instructions.x, instructions.y);
+			//Set to level if clicking
+			if (Gdx.input.isTouched()) {
+				//game.setScreen(new TestLevel(game));
+				//dispose();
+			}
+		} else {
+			//Normal button
+			game.batch.draw(button, instructions.x, instructions.y);
+		}
+		game.font.draw(game.batch, "Instructions", 312, 228);
+		
+		//Use this to adjust text placements
+		/*
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			++debugY;
+		}
+		if (Gdx.input.isKeyPressed(Keys.A)) {
+			--debugX;
+		}
+		if (Gdx.input.isKeyPressed(Keys.S)) {
+			--debugY;
+		}
+		if (Gdx.input.isKeyPressed(Keys.D)) {
+			++debugX;
+		}
+		if (Gdx.input.isKeyPressed(Keys.ENTER)) {
+			System.out.println(debugX + " " + debugY);
+		}
+		*/
 		game.batch.end();
 		
 	}
@@ -95,7 +139,8 @@ public class MenuScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		button.dispose();
+		glowButton.dispose();
 		
 	}
 
