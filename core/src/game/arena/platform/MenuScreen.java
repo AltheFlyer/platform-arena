@@ -82,8 +82,8 @@ public class MenuScreen implements Screen{
 			game.batch.draw(glowButton, instructions.x, instructions.y);
 			//Set to level if clicking
 			if (Gdx.input.isTouched()) {
-				//game.setScreen(new TestLevel(game));
-				//dispose();
+				game.setScreen(new InstructionScreen(game));
+				dispose();
 			}
 		} else {
 			//Normal button

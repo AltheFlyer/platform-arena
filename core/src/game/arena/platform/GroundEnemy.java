@@ -1,5 +1,6 @@
 package game.arena.platform;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 public class GroundEnemy extends Enemy{
@@ -9,10 +10,11 @@ public class GroundEnemy extends Enemy{
 	
 	public GroundEnemy(float x1, float y1) {
 		super(x1, y1, 25, 50, 0, 0, 15);
+		sprite = new Texture("tmp_ground_enemy.png");
 	}
 	
 	public GroundEnemy(Vector2 pos) {
-		super(pos.x, pos.y, 25, 50, 0, 0, 15);
+		this(pos.x, pos.y);
 	}
 
 	public void move(float x, float y, float frame) {
@@ -25,10 +27,12 @@ public class GroundEnemy extends Enemy{
 		if (Math.abs(hitbox.x - x) < 10) {
 			xMove = 0;
 		}
+		
 		//Jumping
-		if (jumpCooldown <= 0 && onGround && y - 150 > hitbox.y) {
+		if (jumpCooldown <= 0 && onGround && y - 100 > hitbox.y) {
 			yMove = 1100;
 			jumpCooldown = 1.5f;
+			onGround = false;
 		}
 		if (jumpCooldown > 0) {
 			jumpCooldown -= frame;
@@ -37,6 +41,12 @@ public class GroundEnemy extends Enemy{
 			}
 		}
 		super.move(frame);
+		// Check if enemy is on the ground (messy)
+		if (yLast != hitbox.y) {
+			onGround = false;
+		} else {
+			onGround = true;
+		}
 	}
-	
+
 }

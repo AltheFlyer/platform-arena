@@ -83,6 +83,12 @@ public class TestLevel extends PlatformArena {
 	public void initializeWaves() {
 		//I need this for testing:
 		waves.put(new GroundEnemy(SPAWN_TOP_LEFT), 0f);
+		waves.put(new GroundEnemy(SPAWN_MID_LEFT), 0f);
+		waves.put(new GroundEnemy(SPAWN_BOT_LEFT), 0f);
+		
+		waves.put(new GroundEnemy(SPAWN_TOP_RIGHT), 0f);
+		waves.put(new GroundEnemy(SPAWN_MID_RIGHT), 0f);
+		waves.put(new GroundEnemy(SPAWN_BOT_RIGHT), 0f);
 		
 		//Lets try something legit:
 		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 5f);

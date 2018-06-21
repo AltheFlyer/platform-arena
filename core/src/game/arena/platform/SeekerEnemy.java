@@ -18,8 +18,14 @@ public class SeekerEnemy extends Enemy {
 	}
 	
 	public void move(float x, float y, float frame) {
-		xMove = 100 * MathUtils.cos(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
-		yMove = 100 * MathUtils.sin(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
+		if (Math.pow(x - hitbox.x, 2) + Math.pow(y - hitbox.y, 2) > 1) {
+			xMove = 100 * MathUtils.cos(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
+			yMove = 100 * MathUtils.sin(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
+		} else {
+			//PRevent vibrating enemies
+			xMove = 0;
+			yMove = 0;
+		}
 		super.move(frame);
 	}
 	

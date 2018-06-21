@@ -328,12 +328,12 @@ public class PlatformArena implements Screen {
 		player.yMove -= gravity * frame;
 
 		// Jumping
-		if (player.onGround && Gdx.input.isKeyJustPressed(Keys.W)) {
+		if (player.onGround && (Gdx.input.isKeyJustPressed(Keys.W) || Gdx.input.isKeyJustPressed(Keys.UP))) {
 			player.yMove = jumpVelocity;
 			player.onGround = false;
 		}
 		// When jump is released, stop moving upwards (as quickly)
-		if (!Gdx.input.isKeyPressed(Keys.W)) {
+		if (!Gdx.input.isKeyPressed(Keys.W) && !Gdx.input.isKeyPressed(Keys.UP)) {
 			// Velocity isn't added by this, only removed
 			if (player.yMove > minJumpVelocity) {
 				player.yMove = minJumpVelocity;
@@ -351,7 +351,7 @@ public class PlatformArena implements Screen {
 		}
 
 		// Drop through platforms (experimental)
-		if (Gdx.input.isKeyJustPressed(Keys.S)) {
+		if (Gdx.input.isKeyJustPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN)) {
 			// This works with platforms with a thickness of 1 or 0 pixels
 			player.hitbox.y -= 1;
 			// Prevent the platform from 'catching' the player dropping
@@ -381,7 +381,9 @@ public class PlatformArena implements Screen {
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
-			e.yMove -= gravity * frame;
+			if (!e.flying) {
+				e.yMove -= gravity * frame;
+			}
 			e.move(player.hitbox.x, player.hitbox.y, frame);
 			if (e.hitbox.y < 0) {
 				e.hitbox.y = 0;
