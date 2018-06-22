@@ -22,7 +22,7 @@ public class SeekerEnemy extends Enemy {
 			xMove = 100 * MathUtils.cos(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
 			yMove = 100 * MathUtils.sin(MathUtils.atan2(y - hitbox.y, x - hitbox.x));
 		} else {
-			//PRevent vibrating enemies
+			//Prevent vibrating enemies
 			xMove = 0;
 			yMove = 0;
 		}

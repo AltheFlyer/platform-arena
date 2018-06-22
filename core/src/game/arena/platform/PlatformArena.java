@@ -40,6 +40,7 @@ public class PlatformArena implements Screen {
 
 	Array<Rectangle> platforms;
 	Array<Projectile> projectiles;
+	Array<Projectile> enemyProjectiles;
 	Array<Enemy> enemies;
 	Array<Star> stars;
 	final int ARENA_WIDTH = 800;
@@ -100,6 +101,7 @@ public class PlatformArena implements Screen {
 		stars = new Array<Star>();
 		projectiles = new Array<Projectile>();
 		enemies = new Array<Enemy>();
+		enemyProjectiles = new Array<Projectile>();
 		
 		//Enemy Waves
 		time = 0;
@@ -385,7 +387,7 @@ public class PlatformArena implements Screen {
 				e.yMove -= gravity * frame;
 			}
 			e.move(player.hitbox.x, player.hitbox.y, frame);
-			if (e.hitbox.y < 0) {
+			if (e.hitbox.y < 0 && !e.flying) {
 				e.hitbox.y = 0;
 				e.onGround = true;
 			}

@@ -81,16 +81,27 @@ public class TestLevel extends PlatformArena {
 	}
 	
 	public void initializeWaves() {
-		//I need this for testing:
-		waves.put(new GroundEnemy(SPAWN_TOP_LEFT), 0f);
-		waves.put(new GroundEnemy(SPAWN_MID_LEFT), 0f);
-		waves.put(new GroundEnemy(SPAWN_BOT_LEFT), 0f);
+		//Rotation enemy?
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 0f);
 		
-		waves.put(new GroundEnemy(SPAWN_TOP_RIGHT), 0f);
-		waves.put(new GroundEnemy(SPAWN_MID_RIGHT), 0f);
-		waves.put(new GroundEnemy(SPAWN_BOT_RIGHT), 0f);
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 25f);
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 26f);
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 27f);
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 28f);
+		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 29f);
+		
+		/*
+		waves.put(new SeekerEnemy(SPAWN_TOP_LEFT), 0f);
+		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 0f);
+		waves.put(new SeekerEnemy(SPAWN_BOT_LEFT), 0f);
+		
+		waves.put(new SeekerEnemy(SPAWN_TOP_RIGHT), 0f);
+		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 0f);
+		waves.put(new SeekerEnemy(SPAWN_BOT_RIGHT), 0f);
+		*/
 		
 		//Lets try something legit:
+
 		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 5f);
 		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 5f);
 		
@@ -103,6 +114,15 @@ public class TestLevel extends PlatformArena {
 		waves.put(new GroundEnemy(SPAWN_BOT_LEFT), 20f);
 		waves.put(new GroundEnemy(SPAWN_BOT_RIGHT), 20f);
 		
+		//Testing new enemies:
+		waves.put(new RadialSeekerEnemy(SPAWN_TOP_LEFT), 20f);
+		waves.put(new RadialSeekerEnemy(SPAWN_MID_LEFT), 20f);
+		waves.put(new RadialSeekerEnemy(SPAWN_BOT_LEFT), 20f);
+		
+		waves.put(new RadialSeekerEnemy(SPAWN_TOP_RIGHT), 20f);
+		waves.put(new RadialSeekerEnemy(SPAWN_MID_RIGHT), 20f);
+		waves.put(new RadialSeekerEnemy(SPAWN_BOT_RIGHT), 20f);
+		
 		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 22f);
 		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 22f);
 		
@@ -111,6 +131,8 @@ public class TestLevel extends PlatformArena {
 		
 		waves.put(new SeekerEnemy(SPAWN_BOT_LEFT), 22f);
 		waves.put(new SeekerEnemy(SPAWN_BOT_RIGHT), 22f);
+		
+		
 	}
 
 }
