@@ -36,15 +36,14 @@ public class PlatformArena implements Screen {
 	// Used for rendering
 	OrthographicCamera camera;
 	ShapeRenderer render;
-	SpriteBatch batch;
 
 	Array<Rectangle> platforms;
 	Array<Projectile> projectiles;
 	Array<Projectile> enemyProjectiles;
 	Array<Enemy> enemies;
 	Array<Star> stars;
-	final int ARENA_WIDTH = 800;
-	final int ARENA_HEIGHT = 600;
+	int arenaWidth;
+	int arenaHeight;
 	// Keeps time
 	float frame;
 
@@ -78,19 +77,22 @@ public class PlatformArena implements Screen {
 		this.game = game;
 		sprites = true;
 		paused = false;
-
+		
+		//Arena settings
+		arenaWidth = 800;
+		arenaHeight = 600;
+		
 		// Initialize player
 		player = new Knight();
 
 		// Initialize camera, level view
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, ARENA_WIDTH, ARENA_HEIGHT);
+		camera.setToOrtho(false, arenaWidth, arenaHeight);
 
 		// Initialize renderer
 		// Set to shape until sprites happen
 		render = new ShapeRenderer();
 		render.setAutoShapeType(true);
-		batch = new SpriteBatch();
 
 		// Initialize images
 		platformSprite = new Texture("platform.png");
@@ -140,6 +142,23 @@ public class PlatformArena implements Screen {
 	
 	@Override
 	public void render(float delta) {
+		//*************** DEBUG ***************//
+		//System.out.println(player.hitbox.x + " " +  player.hitbox.y);
+		//Update Camera (does nothing if in 800x600 level or smaller)
+				camera.position.x = (int) player.hitbox.x;
+				camera.position.y = (int) player.hitbox.y;
+				if (camera.position.x < 400) {
+					camera.position.x = 400;
+				} else if (camera.position.x > arenaWidth - 400){
+					camera.position.x = arenaWidth - 400;
+				}
+				if (camera.position.y < 300) {
+					camera.position.y = 300;
+				} else if (camera.position.y > arenaHeight - 300){
+					camera.position.y = arenaHeight - 300;
+				}
+				
+			
 		// Clear the screen
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -147,7 +166,7 @@ public class PlatformArena implements Screen {
 		// Prepare camera for drawing
 		camera.update();
 		render.setProjectionMatrix(camera.combined);
-		batch.setProjectionMatrix(camera.combined);
+		game.batch.setProjectionMatrix(camera.combined);
 
 		// Calculating frame
 		frame = Gdx.graphics.getDeltaTime();
@@ -219,7 +238,7 @@ public class PlatformArena implements Screen {
 
 	@Override
 	public void dispose() {
-		batch.dispose();
+		game.batch.dispose();
 		render.dispose();
 		starSprite.dispose();
 		platformSprite.dispose();
@@ -243,7 +262,7 @@ public class PlatformArena implements Screen {
 		//Should be changed to transparent
 		if (paused) {
 			render.setColor(1, 1, 1, 0.2f);
-			render.box(0, 0, 0, ARENA_WIDTH, ARENA_HEIGHT, 0);
+			render.box(0, 0, 0, arenaWidth, arenaHeight, 0);
 		}
 
 		// Draw player
@@ -290,34 +309,35 @@ public class PlatformArena implements Screen {
 		render.end();
 
 		if (sprites && !paused) {
-			batch.begin();
+			game.batch.begin();
 
 			// Platform sprites
 			for (Rectangle platform : platforms) {
-				batch.draw(platformSprite, platform.x, platform.y - 10);
+				game.batch.draw(platformSprite, platform.x, platform.y - 10);
 			}
 			
 			//Enemy sprites
 			for (Enemy e: enemies) {
-				batch.draw(e.getState(), e.hitbox.x, e.hitbox.y);
+				game.batch.draw(e.getState(), e.hitbox.x, e.hitbox.y);
 			}
 			
 			// Star sprites
 			for (Star s : stars) {
 				if (!s.collected) {
-					batch.draw(starSprite, s.hitbox.x, s.hitbox.y);
+					game.batch.draw(starSprite, s.hitbox.x, s.hitbox.y);
 				}
 			}
 			
 			// Player sprite
-			batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
+			game.batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
 
-			batch.end();
+			game.batch.end();
 		}
 	}
 
 	public void move() {
 		// Save last player y value
+		player.xLast = player.hitbox.x;
 		player.yLast = player.hitbox.y;
 
 		// ***************Movement***************//
@@ -368,8 +388,8 @@ public class PlatformArena implements Screen {
 		}
 		if (player.hitbox.x < 0) {
 			player.hitbox.x = 0;
-		} else if (player.hitbox.x > ARENA_WIDTH - 50) {
-			player.hitbox.x = ARENA_WIDTH - 50;
+		} else if (player.hitbox.x > arenaWidth - 50) {
+			player.hitbox.x = arenaWidth - 50;
 		}
 
 		// Check if player is on the ground (messy)
@@ -378,6 +398,7 @@ public class PlatformArena implements Screen {
 		} else {
 			player.onGround = true;
 		}
+		
 	}
 
 	public void enemyStuff() {
@@ -486,7 +507,7 @@ public class PlatformArena implements Screen {
 			// Projectiles moving:
 			p.move(frame);
 			// Mark projectiles for removal
-			if (p.hitbox.x < 0 || p.hitbox.x > ARENA_WIDTH || p.hitbox.y > ARENA_HEIGHT || p.hitbox.y < 0
+			if (p.hitbox.x < 0 || p.hitbox.x > arenaWidth || p.hitbox.y > arenaHeight || p.hitbox.y < 0
 					|| p.checkAge()) {
 				p.destroy = true;
 			}
@@ -535,18 +556,18 @@ public class PlatformArena implements Screen {
 		
 		//From 4 corners
 		waves.put(new SeekerEnemy(0, 0), 10f);
-		waves.put(new SeekerEnemy(0, ARENA_HEIGHT), 10f);
-		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT), 10f);
-		waves.put(new SeekerEnemy(ARENA_WIDTH, 0), 10f);
+		waves.put(new SeekerEnemy(0, arenaHeight), 10f);
+		waves.put(new SeekerEnemy(arenaWidth, arenaHeight), 10f);
+		waves.put(new SeekerEnemy(arenaWidth, 0), 10f);
 		
 		//From both sides
-		waves.put(new SeekerEnemy(0, ARENA_HEIGHT / 2 + 50), 16f);
-		waves.put(new SeekerEnemy(0, ARENA_HEIGHT / 2), 16f);
-		waves.put(new SeekerEnemy(0, ARENA_HEIGHT / 2 - 50), 16f);
+		waves.put(new SeekerEnemy(0, arenaHeight / 2 + 50), 16f);
+		waves.put(new SeekerEnemy(0, arenaHeight / 2), 16f);
+		waves.put(new SeekerEnemy(0, arenaHeight / 2 - 50), 16f);
 		
-		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2 + 50), 16f);
-		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2), 16f);
-		waves.put(new SeekerEnemy(ARENA_WIDTH, ARENA_HEIGHT / 2 - 50), 16f);
+		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 + 50), 16f);
+		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2), 16f);
+		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 - 50), 16f);
 	}
 
 	@Override

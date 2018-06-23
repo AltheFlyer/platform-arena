@@ -7,7 +7,7 @@ public class Character {
 	
 	Rectangle hitbox;
 	float xMove, yMove;
-	float yLast;
+	float xLast, yLast;
 	float primaryCooldown;
 	float secondaryCooldown;
 	final float PRIMARY_COOLDOWN;
@@ -20,6 +20,7 @@ public class Character {
 	
 	public Character(float x1, float y1, float pCD, float sCD) {
 		hitbox = new Rectangle(x1, y1, 50, 100);
+		xLast = x1;
 		yLast = y1;
 		xMove = 0;
 		yMove = 0;

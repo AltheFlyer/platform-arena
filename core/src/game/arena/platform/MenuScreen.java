@@ -23,7 +23,7 @@ public class MenuScreen implements Screen{
 	
 	//Buttons
 	//Start Level
-	Rectangle levelStart, orbitalLevel, instructions;
+	Rectangle levelStart, orbitalLevel, bigLevel, instructions;
 	
 	public MenuScreen(final Arena game) {
 		this.game = game;
@@ -36,6 +36,7 @@ public class MenuScreen implements Screen{
 		//Buttons are 210px x 75px
 		levelStart = new Rectangle(295, 263, 210, 75);
 		orbitalLevel = new Rectangle(495, 263, 210, 75);
+		bigLevel = new Rectangle(495, 178, 210, 75);
 		instructions = new Rectangle(295, 178, 210, 75);
 		
 		//Debug
@@ -107,6 +108,21 @@ public class MenuScreen implements Screen{
 		}
 		game.font.draw(game.batch, "Instructions", 312, 228);
 		
+		
+		if (bigLevel.contains(Mouse.x, Mouse.y)) {
+			//Draw glowing button
+			game.batch.draw(glowButton, bigLevel.x, bigLevel.y);
+			//Set to level if clicking
+			if (Gdx.input.isTouched()) {
+				game.setScreen(new BigLevel(game));
+				dispose();
+			}
+		} else {
+			//Normal button
+			game.batch.draw(button, bigLevel.x, bigLevel.y);
+		}
+		game.font.draw(game.batch, "BIG Level", 527, 228);
+
 		//Use this to adjust text placements
 		/*
 		if (Gdx.input.isKeyPressed(Keys.W)) {
