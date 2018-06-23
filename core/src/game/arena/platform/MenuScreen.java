@@ -69,30 +69,15 @@ public class MenuScreen implements Screen{
 			game.batch.draw(glowButton, levelStart.x, levelStart.y);
 			//Set to level if clicking
 			if (Gdx.input.isTouched()) {
-				game.setScreen(new TestLevel(game));
+				game.setScreen(new LevelSelectScreen(game));
 				dispose();
 			}
 		} else {
 			//Normal button
 			game.batch.draw(button, levelStart.x, levelStart.y);
 		}
-		game.font.draw(game.batch, "Test Level", 327, 312);
+		game.font.draw(game.batch, "Level Select", 314, 312);
 
-		//Orbital Level (temp)
-		if (orbitalLevel.contains(Mouse.x, Mouse.y)) {
-			//Draw glowing button
-			game.batch.draw(glowButton, orbitalLevel.x, orbitalLevel.y);
-			//Set to level if clicking
-			if (Gdx.input.isTouched()) {
-				game.setScreen(new OrbitalLevel(game));
-				dispose();
-			}
-		} else {
-			//Normal button
-			game.batch.draw(button, orbitalLevel.x, orbitalLevel.y);
-		}
-		game.font.draw(game.batch, "Orbits?", 527, 312);
-		
 		//Instructions button
 		if (instructions.contains(Mouse.x, Mouse.y)) {
 			//Draw glowing button
@@ -107,21 +92,6 @@ public class MenuScreen implements Screen{
 			game.batch.draw(button, instructions.x, instructions.y);
 		}
 		game.font.draw(game.batch, "Instructions", 312, 228);
-		
-		
-		if (bigLevel.contains(Mouse.x, Mouse.y)) {
-			//Draw glowing button
-			game.batch.draw(glowButton, bigLevel.x, bigLevel.y);
-			//Set to level if clicking
-			if (Gdx.input.isTouched()) {
-				game.setScreen(new BigLevel(game));
-				dispose();
-			}
-		} else {
-			//Normal button
-			game.batch.draw(button, bigLevel.x, bigLevel.y);
-		}
-		game.font.draw(game.batch, "BIG Level", 527, 228);
 
 		//Use this to adjust text placements
 		/*

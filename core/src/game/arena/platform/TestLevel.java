@@ -82,13 +82,13 @@ public class TestLevel extends PlatformArena {
 	
 	public void initializeWaves() {
 		//Rotation enemy?
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 0f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 0f);
 		
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 25f);
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 26f);
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 27f);
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 28f);
-		waves.put(new RotationEnemy(SPAWN_TOP_LEFT), 29f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 25f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 26f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 27f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 28f);
+		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 29f);
 		
 		/*
 		waves.put(new SeekerEnemy(SPAWN_TOP_LEFT), 0f);
