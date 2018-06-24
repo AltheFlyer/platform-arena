@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 
 public class LevelSelectScreen implements Screen {
 
@@ -18,7 +19,7 @@ public class LevelSelectScreen implements Screen {
 	Texture button;
 	Texture glowButton;
 	BitmapFont desc;
-	Rectangle testLevelSelect, orbitalLevelSelect, bigLevelSelect;
+	Array<LevelData> levels;
 
 	// Debug
 	int debugX = 20;
@@ -33,9 +34,13 @@ public class LevelSelectScreen implements Screen {
 		desc = new BitmapFont(Gdx.files.internal("desc_20px.fnt"));
 
 		// Level Buttons
-		testLevelSelect = new Rectangle(20, 450, 75, 75);
-		orbitalLevelSelect = new Rectangle(115, 450, 75, 75);
-		bigLevelSelect = new Rectangle(210, 450, 75, 75);
+		levels = new Array<LevelData>();
+		levels.add(new LevelData("Test Level", "The default testing level, showing off whatever new content or features are added.",
+				20, 450, 75, 75, "TestLevel"));
+		levels.add(new LevelData("Orbital Level", "A Level to showcase the orbital enemy (with varying distances from player).",
+				115, 450, 75, 75, "OrbitalLevel"));
+		levels.add(new LevelData("Big Level", "A large level (1600px x 1200px) to show orthographic camera movement and new Ground Enemy movement.",
+				210, 450, 75, 75, "BigLevel"));
 	}
 
 	@Override
@@ -62,51 +67,8 @@ public class LevelSelectScreen implements Screen {
 		// Draw Title:
 		game.font.draw(game.batch, "Level Select", 20, 587);
 
-		// Test Level
-		if (testLevelSelect.contains(Mouse.x, Mouse.y)) {
-			game.batch.draw(glowButton, testLevelSelect.x, testLevelSelect.y, testLevelSelect.width,
-					testLevelSelect.height);
-			if (Gdx.input.isTouched()) {
-				game.setScreen(new TestLevel(game));
-				dispose();
-			}
-			// Descriptions
-			game.font.draw(game.batch, "Test Level", 20, 100);
-			desc.draw(game.batch, "The default testing level, showing off whatever new content or features are added.",
-					20, 60);
-		} else {
-			game.batch.draw(button, testLevelSelect.x, testLevelSelect.y, testLevelSelect.width,
-					testLevelSelect.height);
-		}
-
-		// Orbital Level
-		if (orbitalLevelSelect.contains(Mouse.x, Mouse.y)) {
-			game.batch.draw(glowButton, orbitalLevelSelect.x, orbitalLevelSelect.y, orbitalLevelSelect.width,
-					orbitalLevelSelect.height);
-			if (Gdx.input.isTouched()) {
-				game.setScreen(new OrbitalLevel(game));
-				dispose();
-			}
-			// Descriptions
-			game.font.draw(game.batch, "Orbital Level", 20, 100);
-			desc.draw(game.batch, "A Level to showcase the orbital enemy (with varying distances from player).",
-					20, 60);
-		} else {
-			game.batch.draw(button, orbitalLevelSelect.x, orbitalLevelSelect.y, orbitalLevelSelect.width,
-					orbitalLevelSelect.height);
-		}
-		
-		if (bigLevelSelect.contains(Mouse.x, Mouse.y)) {
-			game.batch.draw(glowButton, bigLevelSelect.x, bigLevelSelect.y, bigLevelSelect.width, bigLevelSelect.height);
-			if (Gdx.input.isTouched()) {
-				game.setScreen(new BigLevel(game));
-				dispose();
-			}
-			//Descriptions
-			game.font.draw(game.batch, "Big Level", 20, 100);
-			desc.draw(game.batch, "A large level (1600px x 1200px) to show orthographic camera movement and new Ground Enemy movement.", 20, 60, 780, 780, true);
-		} else {
-			game.batch.draw(button, bigLevelSelect.x, bigLevelSelect.y, bigLevelSelect.width, bigLevelSelect.height);
+		for (LevelData l: levels) {
+			l.check(Mouse.x, Mouse.y, game);
 		}
 		
 		game.batch.end();
