@@ -34,14 +34,6 @@ public class GroundEnemy extends Enemy{
 			jumpCooldown = 1.5f;
 			onGround = false;
 		}
-
-		//Dropping through platforms
-		if (jumpCooldown <= 0 && onGround && y + 100 < hitbox.y) {
-			hitbox.y -= 1;
-			yLast = hitbox.y;
-			onGround = false;
-			jumpCooldown = 1.5f;
-		}
 		
 		//Tick cooldown
 		if (jumpCooldown > 0) {
@@ -52,6 +44,16 @@ public class GroundEnemy extends Enemy{
 		}
 		
 		super.move(frame);
+		
+		//Keeping this order prevents enemies from phasing through platforms
+		//Dropping through platforms
+		if (jumpCooldown <= 0 && onGround && y + 100 < hitbox.y) {
+			hitbox.y -= 1;
+			yLast = hitbox.y;
+			onGround = false;
+			jumpCooldown = 1.5f;
+		}
+		
 		// Check if enemy is on the ground (messy)
 		if (yLast != hitbox.y) {
 			onGround = false;

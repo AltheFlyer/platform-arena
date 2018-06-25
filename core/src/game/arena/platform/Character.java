@@ -12,13 +12,16 @@ public class Character {
 	float secondaryCooldown;
 	final float PRIMARY_COOLDOWN;
 	final float SECONDARY_COOLDOWN;
+	final float INV_TIME;
+	float invincible;
 	boolean onGround;
 	boolean hasCollided;
 	Texture playerSprite;
 	Texture jumpSprite;
 	Texture fallSprite;
+	float health;
 	
-	public Character(float x1, float y1, float pCD, float sCD) {
+	public Character(float x1, float y1, float pCD, float sCD, float hp) {
 		hitbox = new Rectangle(x1, y1, 50, 100);
 		xLast = x1;
 		yLast = y1;
@@ -28,7 +31,10 @@ public class Character {
 		secondaryCooldown = 0;
 		PRIMARY_COOLDOWN = pCD;
 		SECONDARY_COOLDOWN = sCD;
+		INV_TIME = 2f;
+		invincible = 0;
 		onGround = false;
+		health = hp;
 		/*By default, I'll use this:*/
 		playerSprite = new Texture("question_mark50x100.png");
 		jumpSprite = new Texture("arrow_up.png");
@@ -50,5 +56,10 @@ public class Character {
 		} else {
 			return playerSprite;
 		}
+	}
+	
+	public void damage(float dam) {
+		health -= dam;
+		invincible = INV_TIME;
 	}
 }

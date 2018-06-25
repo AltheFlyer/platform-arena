@@ -336,6 +336,15 @@ public class PlatformArena implements Screen {
 	}
 
 	public void move() {
+		//TODO Move this
+		//Player invincibility, to be moved
+		if (player.invincible > 0) {
+			player.invincible -= frame;
+		}
+		if (player.invincible < 0) {
+			player.invincible = 0;
+		}
+		
 		// Save last player y value
 		player.xLast = player.hitbox.x;
 		player.yLast = player.hitbox.y;
@@ -404,10 +413,17 @@ public class PlatformArena implements Screen {
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
+			//Save this
+			e.yLast = e.hitbox.y;
+			
+			//Gravity
 			if (!e.flying) {
 				e.yMove -= gravity * frame;
 			}
+			
 			e.move(player.hitbox.x, player.hitbox.y, frame);
+			
+			//Keep in bounds
 			if (e.hitbox.y < 0 && !e.flying) {
 				e.hitbox.y = 0;
 				e.onGround = true;
@@ -420,6 +436,11 @@ public class PlatformArena implements Screen {
 					p.destroy = true;
 					e.damage(p.damage);
 				}
+			}
+			//Player Collision
+			if (e.hasCollided(player.hitbox) && player.invincible <= 0) {
+				player.damage(e.collisionDamage);
+				System.out.println(player.health);
 			}
 		}
 	
