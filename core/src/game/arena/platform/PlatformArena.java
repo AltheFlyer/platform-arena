@@ -230,7 +230,8 @@ public class PlatformArena implements Screen {
 			// DEBUG//
 			// //System.out.println(player.y);
 			
-			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			//Exit level
+			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || player.health <= 0) {
 				game.setScreen(new MenuScreen(game));
 			}
 		}
@@ -305,6 +306,17 @@ public class PlatformArena implements Screen {
 		} else if (meleeCooldown > 0.8f && !isLeft) {
 			render.arc(damage.x, damage.y, 150, 90, -90, 10);
 		}
+		
+		//Draw health bar
+		//Get fixed value:
+		//In Vector3, Y is down...
+		Vector3 p = camera.unproject(new Vector3(20, 60, 0));
+		
+		render.setColor(Color.RED);
+		render.box(p.x, p.y, 0, 200 * (player.health / player.MAX_HEALTH), 30, 0);
+		render.setColor(Color.BLACK);
+		render.set(ShapeType.Line);
+		render.box(p.x, p.y, 0, 200, 30, 0);
 
 		render.end();
 
@@ -440,7 +452,6 @@ public class PlatformArena implements Screen {
 			//Player Collision
 			if (e.hasCollided(player.hitbox) && player.invincible <= 0) {
 				player.damage(e.collisionDamage);
-				System.out.println(player.health);
 			}
 		}
 	

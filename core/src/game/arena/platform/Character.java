@@ -20,6 +20,7 @@ public class Character {
 	Texture jumpSprite;
 	Texture fallSprite;
 	float health;
+	final float MAX_HEALTH;
 	
 	public Character(float x1, float y1, float pCD, float sCD, float hp) {
 		hitbox = new Rectangle(x1, y1, 50, 100);
@@ -34,6 +35,7 @@ public class Character {
 		INV_TIME = 2f;
 		invincible = 0;
 		onGround = false;
+		MAX_HEALTH = hp;
 		health = hp;
 		/*By default, I'll use this:*/
 		playerSprite = new Texture("question_mark50x100.png");
