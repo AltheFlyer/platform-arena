@@ -22,6 +22,7 @@ public class Enemy {
 	boolean onGround;
 	boolean flying;
 	Texture sprite;
+	float collisionDamage;
 	//More to come
 	
 	/**
@@ -42,12 +43,12 @@ public class Enemy {
 		destroy = false;
 		onGround = false;
 		flying = false;
+		collisionDamage = 10;
 		//By default, do not use
 		sprite = new Texture("question_mark50x100.png");
 	}
 	
 	public void move(float frame) {
-		yLast = hitbox.y;
 		hitbox.x += xMove * frame;
 		hitbox.y += yMove * frame;
 	}
@@ -59,7 +60,6 @@ public class Enemy {
 	 * @param frame time since last frame
 	 */
 	public void move(float x, float y, float frame) {
-		yLast = hitbox.y;
 		hitbox.x += xMove * frame;
 		hitbox.y += yMove * frame;
 	}
@@ -72,4 +72,9 @@ public class Enemy {
 	public Texture getState(){
 		return sprite;
 	}
+	
+	public boolean hasCollided(Rectangle box) {
+		return this.hitbox.overlaps(box);
+	}
+	
 }

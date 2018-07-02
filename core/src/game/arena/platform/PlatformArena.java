@@ -44,8 +44,6 @@ public class PlatformArena implements Screen {
 	Array<Star> stars;
 	int arenaWidth;
 	int arenaHeight;
-	// Keeps time
-	float frame;
 
 	Vector3 Mouse;
 
@@ -72,6 +70,12 @@ public class PlatformArena implements Screen {
 	ObjectMap<Enemy, Float> waves;
 	//Global timer
 	float time;
+	// Keeps delta time
+	float frame;
+	
+	//Score
+	int score;
+	int displayHeight;
 
 	public PlatformArena(final Arena game) {
 		this.game = game;
@@ -115,6 +119,10 @@ public class PlatformArena implements Screen {
 
 		// Initialize time count
 		frame = 0;
+		
+		//Score
+		score = 0;
+		displayHeight = 100;
 
 		// Used for melee (to be moved)
 		meleeCooldown = 0;
@@ -146,14 +154,14 @@ public class PlatformArena implements Screen {
 		//System.out.println(player.hitbox.x + " " +  player.hitbox.y);
 		//Update Camera (does nothing if in 800x600 level or smaller)
 				camera.position.x = (int) player.hitbox.x;
-				camera.position.y = (int) player.hitbox.y;
+				camera.position.y = (int) player.hitbox.y - displayHeight;
 				if (camera.position.x < 400) {
 					camera.position.x = 400;
 				} else if (camera.position.x > arenaWidth - 400){
 					camera.position.x = arenaWidth - 400;
 				}
-				if (camera.position.y < 300) {
-					camera.position.y = 300;
+				if (camera.position.y < 300 - displayHeight) {
+					camera.position.y = 300 - displayHeight;
 				} else if (camera.position.y > arenaHeight - 300){
 					camera.position.y = arenaHeight - 300;
 				}
@@ -192,7 +200,7 @@ public class PlatformArena implements Screen {
 
 			// Collectibles
 			for (Star s : stars) {
-				s.collect(player.hitbox);
+				if (s.collect(player.hitbox)) ++score;
 				s.spawn(frame);
 			}
 
@@ -230,7 +238,8 @@ public class PlatformArena implements Screen {
 			// DEBUG//
 			// //System.out.println(player.y);
 			
-			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			//Exit level
+			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || player.health <= 0) {
 				game.setScreen(new MenuScreen(game));
 			}
 		}
@@ -305,11 +314,30 @@ public class PlatformArena implements Screen {
 		} else if (meleeCooldown > 0.8f && !isLeft) {
 			render.arc(damage.x, damage.y, 150, 90, -90, 10);
 		}
-
+		
+		//Draw display with info
+		//Draw health bar
+		//Get fixed value:
+		//In Vector3, Y is down...
+		Vector3 p = camera.unproject(new Vector3(20, 560, 0));
+		Vector3 b = camera.unproject(new Vector3(0, 600, 0));
+		
+		render.setColor(Color.GRAY);
+		render.box(b.x, b.y, 0, 800, displayHeight, 0);
+		
+		render.setColor(Color.RED);
+		render.box(p.x, p.y, 0, 200 * (player.health / player.MAX_HEALTH), 30, 0);
+		render.setColor(Color.BLACK);
+		render.set(ShapeType.Line);
+		render.box(p.x, p.y, 0, 200, 30, 0);
+		
+		
+		
 		render.end();
-
+		
+		game.batch.begin();
 		if (sprites && !paused) {
-			game.batch.begin();
+			
 
 			// Platform sprites
 			for (Rectangle platform : platforms) {
@@ -331,11 +359,34 @@ public class PlatformArena implements Screen {
 			// Player sprite
 			game.batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
 
-			game.batch.end();
 		}
+		
+		//Text for menu:
+		//Health
+		game.desc.draw(game.batch, "Health", p.x + 5, p.y + 50);
+		game.desc.draw(game.batch, String.format("%.0f / %.0f", player.health, player.MAX_HEALTH), p.x + 5, p.y + 22);
+		
+		//Score
+		game.desc.draw(game.batch, "Score", p.x + 250, p.y + 50);
+		game.desc.draw(game.batch, String.format("%d", score), p.x + 250, p.y + 22);
+		
+		//Time
+		game.desc.draw(game.batch, "Time", p.x+ 400, p.y + 50);
+		game.desc.draw(game.batch, String.format("%02d:%02d:%2.0f", (int) time / 60, (int) time % 60, 100 * (time % 1) ), p.x + 400, p.y + 22);
+		
+		game.batch.end();
 	}
 
 	public void move() {
+		//TODO Move this
+		//Player invincibility, to be moved
+		if (player.invincible > 0) {
+			player.invincible -= frame;
+		}
+		if (player.invincible < 0) {
+			player.invincible = 0;
+		}
+		
 		// Save last player y value
 		player.xLast = player.hitbox.x;
 		player.yLast = player.hitbox.y;
@@ -404,10 +455,17 @@ public class PlatformArena implements Screen {
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
+			//Save this
+			e.yLast = e.hitbox.y;
+			
+			//Gravity
 			if (!e.flying) {
 				e.yMove -= gravity * frame;
 			}
+			
 			e.move(player.hitbox.x, player.hitbox.y, frame);
+			
+			//Keep in bounds
 			if (e.hitbox.y < 0 && !e.flying) {
 				e.hitbox.y = 0;
 				e.onGround = true;
@@ -421,6 +479,10 @@ public class PlatformArena implements Screen {
 					e.damage(p.damage);
 				}
 			}
+			//Player Collision
+			if (e.hasCollided(player.hitbox) && player.invincible <= 0) {
+				player.damage(e.collisionDamage);
+			}
 		}
 	
 		// ***************DEBUG***************//
@@ -432,6 +494,10 @@ public class PlatformArena implements Screen {
 			Enemy en = e.next();
 			if (en.destroy) {
 				e.remove();
+				//Increment score:
+				//TODO (Change to be based on enemy type)
+				++score;
+				
 				// Make respawning enemies for now
 				/*
 				if (MathUtils.random(0, 1) == 1 || enemies.size < 7)
