@@ -17,6 +17,7 @@ public class OrbitalEnemy extends Enemy {
 		sprite = new Texture("seeker_enemy.png");
 		flying = true;
 		distance = 200;
+		score = 2;
 	}
 	
 	public OrbitalEnemy(float x1, float y1, float dist) {

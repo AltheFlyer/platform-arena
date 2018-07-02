@@ -493,11 +493,15 @@ public class PlatformArena implements Screen {
 		while (e.hasNext()) {
 			Enemy en = e.next();
 			if (en.destroy) {
-				e.remove();
 				//Increment score:
 				//TODO (Change to be based on enemy type)
-				++score;
+				score += en.score;
+				if (en.hasDeathSummon) {
+					enemies.add(en.deathSummon());
+				}
 				
+				e.remove();
+
 				// Make respawning enemies for now
 				/*
 				if (MathUtils.random(0, 1) == 1 || enemies.size < 7)

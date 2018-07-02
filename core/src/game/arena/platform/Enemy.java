@@ -21,8 +21,10 @@ public class Enemy {
 	boolean destroy;
 	boolean onGround;
 	boolean flying;
+	boolean hasDeathSummon;
 	Texture sprite;
 	float collisionDamage;
+	int score;
 	//More to come
 	
 	/**
@@ -43,7 +45,9 @@ public class Enemy {
 		destroy = false;
 		onGround = false;
 		flying = false;
+		hasDeathSummon = false;
 		collisionDamage = 10;
+		score = 1;
 		//By default, do not use
 		sprite = new Texture("question_mark50x100.png");
 	}
@@ -75,6 +79,16 @@ public class Enemy {
 	
 	public boolean hasCollided(Rectangle box) {
 		return this.hitbox.overlaps(box);
+	}
+	
+	//Use this for summoning things
+	public Enemy summon() {
+		return null;
+	}
+	
+	//Same as above, but only on enemy death
+	public Enemy deathSummon() {
+		return null;
 	}
 	
 }
