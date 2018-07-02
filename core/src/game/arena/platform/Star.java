@@ -23,11 +23,13 @@ public class Star {
 		collected = false;
 	}
 	
-	public void collect(Rectangle player) {
+	public boolean collect(Rectangle player) {
 		if (hitbox.overlaps(player) && !collected) {
 			collected = true;
 			cooldown = COOLDOWN_TIME;
+			return true;
 		}
+		return false;
 	}
 	
 	public void spawn(float frame) {

@@ -12,6 +12,8 @@ public class Arena extends Game {
 	ShapeRenderer render;
 	//Open Sans 32px
 	BitmapFont font;
+	//Open Sans 16px
+	BitmapFont desc;
 	
 	@Override
 	public void create() {
@@ -19,6 +21,7 @@ public class Arena extends Game {
 		render = new ShapeRenderer();
 		render.setAutoShapeType(true);
 		font = new BitmapFont(Gdx.files.internal("font_test.fnt"));
+		desc = new BitmapFont(Gdx.files.internal("desc_20px.fnt"));
 		
 		this.setScreen(new MenuScreen(this));
 	}

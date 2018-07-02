@@ -14,7 +14,6 @@ public class InstructionScreen implements Screen {
 	Arena game;
 	OrthographicCamera camera;
 	Vector3 Mouse;
-	BitmapFont desc;
 	
 	//Debug
 	float debugX;
@@ -24,9 +23,6 @@ public class InstructionScreen implements Screen {
 		this.game = game;
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 600);
-		
-		//Header font comes from main game file
-		desc = new BitmapFont(Gdx.files.internal("desc_20px.fnt"));
 		
 		debugX = 400;
 		debugY = 300;
@@ -70,7 +66,7 @@ public class InstructionScreen implements Screen {
 		
 		game.batch.begin();
 		game.font.draw(game.batch, "Controls", 20, 590);
-		desc.draw(game.batch, 
+		game.desc.draw(game.batch, 
 				"Move with WASD or Arrow Keys.\n"
 				+ "Jump with W or UP arrow key.\n"
 				+ "Press S or DOWN to drop through platforms.\n"
@@ -78,7 +74,7 @@ public class InstructionScreen implements Screen {
 				+ "Melee with Right Mouse Button.\n"
 				, 22, 531);
 		game.font.draw(game.batch, "Debug Fun", 20, 320);
-		desc.draw(game.batch, 
+		game.desc.draw(game.batch, 
 				"Press Q to change between sprites and shape drawing.\n"
 				+ "Press E to pause (This was poorly made).\n"
 				+ "Press Esc to go back to menu (Yes that works here)."
