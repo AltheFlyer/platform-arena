@@ -42,10 +42,9 @@ public class OrbitalEnemy extends Enemy {
 		hitbox.y = y + distance * MathUtils.sin(angle * MathUtils.degreesToRadians);
 		
 		angle -= 72 * frame;
-		
-		//Something happens when 1 full revolution is made around the player
 	}
 	
+	//The enemy does its attack after doing a full rotation
 	public boolean canAttack(float x, float y, float frame) {
 		return angle < -270;
 	}
