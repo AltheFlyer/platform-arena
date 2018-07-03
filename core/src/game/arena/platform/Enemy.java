@@ -2,6 +2,7 @@ package game.arena.platform;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * <p>
@@ -25,6 +26,7 @@ public class Enemy {
 	Texture sprite;
 	float collisionDamage;
 	int score;
+	AttackType type;
 	//More to come
 	
 	/**
@@ -50,6 +52,7 @@ public class Enemy {
 		score = 1;
 		//By default, do not use
 		sprite = new Texture("question_mark50x100.png");
+		type = AttackType.none;
 	}
 	
 	public void move(float frame) {
@@ -89,6 +92,25 @@ public class Enemy {
 	//Same as above, but only on enemy death
 	public Enemy deathSummon() {
 		return null;
+	}
+	
+	//Attacking check
+	public boolean canAttack(float x, float y, float frame) {
+		return false;
+	}
+	
+	//Attack with projectiles
+	public Projectile attackSingle(float x, float y, float frame) {
+		return null;
+	}
+	
+	//Attack with projectiles
+	public Array<Projectile> attackMulti(float x, float y, float frame) {
+		return null;
+	}
+	
+	public enum AttackType {
+		none, single, multi 
 	}
 	
 }

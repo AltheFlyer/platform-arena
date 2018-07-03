@@ -20,6 +20,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import game.arena.platform.Enemy.AttackType;
+
 /**
  * A test level
  *
@@ -195,48 +197,20 @@ public class PlatformArena implements Screen {
 			enemyStuff();
 
 			platformCollisions();
-
-			doProjectileStuff();
-
+			
+			doPlayerAttacks();
+			
+			doProjectileStuff(projectiles);
+			
+			doProjectileStuff(enemyProjectiles);
+			
+			playerProjectileCollisions();
+			
 			// Collectibles
 			for (Star s : stars) {
 				if (s.collect(player.hitbox)) ++score;
 				s.spawn(frame);
 			}
-
-			// Melee attack?
-			if (Gdx.input.isButtonPressed(Buttons.RIGHT) && meleeCooldown <= 0) {
-				// Check player direction
-				if (Mouse.x < player.hitbox.x) {
-					// Creates a rectangle that immediately deals damage
-					damage = new Rectangle(player.hitbox.x - 125, player.hitbox.y, 150, 150);
-					for (Enemy e : enemies) {
-						if (damage.overlaps(e.hitbox)) {
-							e.damage(5);
-						}
-					}
-					isLeft = true;
-				} else {
-					// Same as above
-					damage = new Rectangle(player.hitbox.x + 25, player.hitbox.y, 150, 150);
-					for (Enemy e : enemies) {
-						if (damage.overlaps(e.hitbox)) {
-							e.damage(5);
-						}
-					}
-					isLeft = false;
-				}
-				meleeCooldown = MELEE_TIMER;
-			}
-			if (meleeCooldown > 0) {
-				meleeCooldown -= frame;
-			}
-			if (meleeCooldown < 0) {
-				meleeCooldown = 0;
-			}
-
-			// DEBUG//
-			// //System.out.println(player.y);
 			
 			//Exit level
 			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || player.health <= 0) {
@@ -304,6 +278,10 @@ public class PlatformArena implements Screen {
 		// Draw projectiles
 		render.setColor(Color.BLACK);
 		for (Projectile p : projectiles) {
+			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
+		}
+		
+		for (Projectile p : enemyProjectiles) {
 			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
 		}
 
@@ -470,6 +448,7 @@ public class PlatformArena implements Screen {
 				e.hitbox.y = 0;
 				e.onGround = true;
 			}
+			
 			// Enemy-projectile collision
 			for (Projectile p : projectiles) {
 				if (e.hitbox.overlaps(p.hitbox)) {
@@ -479,9 +458,19 @@ public class PlatformArena implements Screen {
 					e.damage(p.damage);
 				}
 			}
+			
 			//Player Collision
-			if (e.hasCollided(player.hitbox) && player.invincible <= 0) {
+			if (e.hasCollided(player.hitbox)) {
 				player.damage(e.collisionDamage);
+			}
+			
+			//Attacking
+			if (e.canAttack(player.hitbox.x, player.hitbox.y, frame)) {
+				if (e.type == AttackType.single) {
+					enemyProjectiles.add(e.attackSingle(player.hitbox.x, player.hitbox.y, frame));
+				} else if (e.type == AttackType.multi) {
+					enemyProjectiles.addAll(e.attackMulti(player.hitbox.x, player.hitbox.y, frame));
+				}
 			}
 		}
 	
@@ -551,9 +540,9 @@ public class PlatformArena implements Screen {
 			}
 		}
 	}
-
-	public void doProjectileStuff() {
-		// Attacking:
+	
+	public void doPlayerAttacks() {
+		// Shooting:
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && player.primaryCooldown == 0) {
 			// Generate angle from horizontal to player and player to cursor
 			// Angles in radians
@@ -571,9 +560,43 @@ public class PlatformArena implements Screen {
 			// Prevents underflow?
 			player.primaryCooldown = 0;
 		}
+		
+		// Melee attack?
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT) && meleeCooldown <= 0) {
+			// Check player direction
+			if (Mouse.x < player.hitbox.x) {
+				// Creates a rectangle that immediately deals damage
+				damage = new Rectangle(player.hitbox.x - 125, player.hitbox.y, 150, 150);
+				for (Enemy e : enemies) {
+					if (damage.overlaps(e.hitbox)) {
+						e.damage(5);
+					}
+				}
+				isLeft = true;
+			} else {
+				// Same as above
+				damage = new Rectangle(player.hitbox.x + 25, player.hitbox.y, 150, 150);
+				for (Enemy e : enemies) {
+					if (damage.overlaps(e.hitbox)) {
+						e.damage(5);
+					}
+				}
+				isLeft = false;
+			}
+			meleeCooldown = MELEE_TIMER;
+		}
+		if (meleeCooldown > 0) {
+			meleeCooldown -= frame;
+		}
+		if (meleeCooldown < 0) {
+			meleeCooldown = 0;
+		}
+	}
 
+	public void doProjectileStuff(Array<Projectile> proj) {
+		
 		// Projectile work
-		for (Projectile p : projectiles) {
+		for (Projectile p : proj) {
 			// Projectiles moving:
 			p.move(frame);
 			// Mark projectiles for removal
@@ -584,12 +607,21 @@ public class PlatformArena implements Screen {
 		}
 
 		// The removal code
-		Iterator<Projectile> iter = projectiles.iterator();
+		Iterator<Projectile> iter = proj.iterator();
 		while (iter.hasNext()) {
 			Projectile p = iter.next();
 			if (p.destroy) {
 				iter.remove();
 			}
+		}
+	}
+	
+	public void playerProjectileCollisions() {
+		for (Projectile p: enemyProjectiles) {
+			if (player.hitbox.overlaps(p.hitbox)) {
+				p.destroy = true;
+				player.damage(p.damage);
+			}	
 		}
 	}
 

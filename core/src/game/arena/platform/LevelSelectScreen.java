@@ -37,7 +37,8 @@ public class LevelSelectScreen implements Screen {
 		levels = new Array<LevelData>();
 		levels.add(new LevelData("Test Level", "The default testing level, showing off whatever new content or features are added.",
 				20, 450, 75, 75, "TestLevel"));
-		levels.add(new LevelData("Orbital Level", "A Level to showcase the orbital enemy (with varying distances from player).",
+		levels.add(new LevelData("Orbital Level", "A Level to showcase the orbital enemy (with varying distances from player). " + 
+				"Their normal attacks are disabled in this level.",
 				115, 450, 75, 75, "OrbitalLevel"));
 		levels.add(new LevelData("Big Level", "A large level (1600px x 1200px) to show orthographic camera movement and" +
 				" new Ground Enemy and Rider Enemy movement.",

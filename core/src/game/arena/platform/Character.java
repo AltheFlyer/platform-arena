@@ -61,7 +61,9 @@ public class Character {
 	}
 	
 	public void damage(float dam) {
-		health -= dam;
-		invincible = INV_TIME;
+		if (invincible <= 0) {
+			health -= dam;
+			invincible = INV_TIME;
+		}
 	}
 }

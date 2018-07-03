@@ -3,6 +3,8 @@ package game.arena.platform;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
+import game.arena.platform.Enemy.AttackType;
+
 //This is just a fun level to experiment with the orbital enemies
 public class OrbitalLevel extends PlatformArena {
 
@@ -12,6 +14,10 @@ public class OrbitalLevel extends PlatformArena {
 		player.hitbox.y = 600;
 		enemies.clear();
 		init();
+		//Prevents enemy attacks, this is a level for display
+		for (Enemy e: waves.keys()) {
+			e.type = AttackType.none;
+		}
 	}
 	
 	public void initializePlatforms() {
@@ -30,6 +36,7 @@ public class OrbitalLevel extends PlatformArena {
 	public void initializeWaves() {
 		//Rotation enemy?
 		waves.put(new OrbitalEnemy(-100, -100, 200), 0f);
+		
 		waves.put(new OrbitalEnemy(-100, -100, 200), 1f);
 		waves.put(new OrbitalEnemy(-100, -100, 200), 2f);
 		waves.put(new OrbitalEnemy(-100, -100, 200), 3f);
