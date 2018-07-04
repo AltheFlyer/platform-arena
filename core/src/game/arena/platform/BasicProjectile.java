@@ -12,4 +12,7 @@ public class BasicProjectile  extends Projectile {
 		super(x1, y1, 0, 0, 0, 0, 0, damage);
 	}
 	
+	public BasicProjectile(float x1, float y1, float angle, float speed, float age) {
+		super(x1, y1, MathUtils.cos(angle), MathUtils.sin(angle), speed, 0, 0, 1);
+	}
 }

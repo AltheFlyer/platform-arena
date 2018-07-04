@@ -45,6 +45,8 @@ public class LevelData {
 			return new OrbitalLevel(game);
 		} else if (level.equals("BigLevel")) {
 			return new BigLevel(game);
+		} else if (level.equals("ChaosTestLevel")) {
+			return new ChaosTestLevel(game);
 		} else {
 			return new TestLevel(game);
 		}
@@ -59,7 +61,9 @@ public class LevelData {
 		} else if (level.equals("BigLevel")) {
 			return "A large level (1600px x 1200px) to show orthographic camera movement and"
 					+ " new Ground Enemy and Rider Enemy movement.";
-		} else {
+		} else if (level.equals("ChaosTestLevel")) {
+			return "A large level with abnormal platforms and stars for testing of more new enemies.";
+		}else {
 			return "DEFAULT DATA";
 		}
 	}

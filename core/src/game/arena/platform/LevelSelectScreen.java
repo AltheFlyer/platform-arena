@@ -37,6 +37,7 @@ public class LevelSelectScreen implements Screen {
 		levels.add(new LevelData("Test Level", 20, 450, 75, 75, "TestLevel"));
 		levels.add(new LevelData("Orbital Level", 115, 450, 75, 75, "OrbitalLevel"));
 		levels.add(new LevelData("Big Level", 210, 450, 75, 75, "BigLevel"));
+		levels.add(new LevelData("Chaos Level", 305, 450, 75, 75, "ChaosTestLevel"));
 	}
 
 	@Override

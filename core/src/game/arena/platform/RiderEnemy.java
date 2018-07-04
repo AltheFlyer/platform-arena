@@ -52,6 +52,13 @@ public class RiderEnemy extends Enemy {
 			onGround = false;
 			jumpCooldown = 0.1f;
 		}
+		
+		//Same reasoning as in Ground Enemy
+		if (yLast != hitbox.y) {
+			onGround = false;
+		} else {
+			onGround = true;
+		}
 	}
 	
 	public Enemy deathSummon() {

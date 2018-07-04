@@ -55,6 +55,13 @@ public class GroundEnemy extends Enemy{
 		}
 		
 		// Check if enemy is on the ground (messy)
+		/*
+		This seems to be necessary to prevent air jumps-
+		I can't find any other place to do this.
+		I should only need to set onGround to false
+		and the level would do the rest, but Im ay change this later.
+		 */
+		
 		if (yLast != hitbox.y) {
 			onGround = false;
 		} else {
