@@ -20,16 +20,17 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import game.arena.platform.Enemy.AttackType;
+import game.arena.platform.Projectile.CollisionType;
 
 /**
  * A test level
  *
  */
 public class PlatformArena implements Screen {
-	
-	//Used for screen stuff
+
+	// Used for screen stuff
 	final Arena game;
-	
+
 	Texture platformSprite;
 	Texture starSprite;
 	Character player;
@@ -66,15 +67,15 @@ public class PlatformArena implements Screen {
 	// ***************DEBUG***************//
 	boolean sprites;
 	boolean paused;
-	
-	//Enemy Waves
+
+	// Enemy Waves
 	ObjectMap<Enemy, Float> waves;
-	//Global timer
+	// Global timer
 	float time;
 	// Keeps delta time
 	float frame;
-	
-	//Score
+
+	// Score
 	int score;
 	int displayHeight;
 
@@ -82,11 +83,11 @@ public class PlatformArena implements Screen {
 		this.game = game;
 		sprites = true;
 		paused = false;
-		
-		//Arena settings
+
+		// Arena settings
 		arenaWidth = 800;
 		arenaHeight = 600;
-		
+
 		// Initialize player
 		player = new Knight();
 
@@ -109,19 +110,19 @@ public class PlatformArena implements Screen {
 		projectiles = new Array<Projectile>();
 		enemies = new Array<Enemy>();
 		enemyProjectiles = new Array<Projectile>();
-		
-		//Enemy Waves
+
+		// Enemy Waves
 		time = 0;
 		waves = new ObjectMap<Enemy, Float>();
-		
+
 		// Load enemies (for now)
 		enemies.add(new DummyEnemy(375, 450));
 		enemies.add(new SeekerEnemy(300, 300));
 
 		// Initialize time count
 		frame = 0;
-		
-		//Score
+
+		// Score
 		score = 0;
 		displayHeight = 100;
 
@@ -138,36 +139,35 @@ public class PlatformArena implements Screen {
 		jumpVelocity = gravity * maxJumpTime;
 		minJumpVelocity = (float) Math.sqrt(2 * gravity * minJumpHeight);
 		// ***************DEBUG***************//
-		//System.out.println(gravity + " " + jumpVelocity);
+		// System.out.println(gravity + " " + jumpVelocity);
 	}
-	
-	//Because i need this separate to prevent crashes
+
+	// Because i need this separate to prevent crashes
 	public void init() {
 		// Default level
 		initializePlatforms();
 		initializeStars();
 		initializeWaves();
 	}
-	
+
 	@Override
 	public void render(float delta) {
-		//*************** DEBUG ***************//
-		//System.out.println(player.hitbox.x + " " +  player.hitbox.y);
-		//Update Camera (does nothing if in 800x600 level or smaller)
-				camera.position.x = (int) player.hitbox.x;
-				camera.position.y = (int) player.hitbox.y - displayHeight;
-				if (camera.position.x < 400) {
-					camera.position.x = 400;
-				} else if (camera.position.x > arenaWidth - 400){
-					camera.position.x = arenaWidth - 400;
-				}
-				if (camera.position.y < 300 - displayHeight) {
-					camera.position.y = 300 - displayHeight;
-				} else if (camera.position.y > arenaHeight - 300){
-					camera.position.y = arenaHeight - 300;
-				}
-				
-			
+		// *************** DEBUG ***************//
+		// System.out.println(player.hitbox.x + " " + player.hitbox.y);
+		// Update Camera (does nothing if in 800x600 level or smaller)
+		camera.position.x = (int) player.hitbox.x;
+		camera.position.y = (int) player.hitbox.y - displayHeight;
+		if (camera.position.x < 400) {
+			camera.position.x = 400;
+		} else if (camera.position.x > arenaWidth - 400) {
+			camera.position.x = arenaWidth - 400;
+		}
+		if (camera.position.y < 300 - displayHeight) {
+			camera.position.y = 300 - displayHeight;
+		} else if (camera.position.y > arenaHeight - 300) {
+			camera.position.y = arenaHeight - 300;
+		}
+		
 		// Clear the screen
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -184,34 +184,35 @@ public class PlatformArena implements Screen {
 			frame = 0.3f;
 		// Save mouse location
 		Mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
-		
-		//Increment global time
+
+		// Increment global time
 		time += frame;
-		
+
 		draw();
 
 		if (!paused) {
 			move();
-			
+
 			enemyStuff();
 
 			platformCollisions();
-			
+
 			doPlayerAttacks();
-			
+
 			doProjectileStuff(projectiles);
-			
+
 			doProjectileStuff(enemyProjectiles);
-			
+
 			playerProjectileCollisions();
-			
+
 			// Collectibles
 			for (Star s : stars) {
-				if (s.collect(player.hitbox)) ++score;
+				if (s.collect(player.hitbox))
+					++score;
 				s.spawn(frame);
 			}
-			
-			//Exit level
+
+			// Exit level
 			if (Gdx.input.isKeyJustPressed(Keys.ESCAPE) || player.health <= 0) {
 				game.setScreen(new MenuScreen(game));
 			}
@@ -240,8 +241,8 @@ public class PlatformArena implements Screen {
 
 		render.begin();
 		render.set(ShapeType.Filled);
-		//Blank screen when game is paused
-		//Should be changed to transparent
+		// Blank screen when game is paused
+		// Should be changed to transparent
 		if (paused) {
 			render.setColor(1, 1, 1, 0.2f);
 			render.box(0, 0, 0, arenaWidth, arenaHeight, 0);
@@ -266,20 +267,20 @@ public class PlatformArena implements Screen {
 					render.box(s.hitbox.x, s.hitbox.y, 0, s.hitbox.width, s.hitbox.height, 0);
 				}
 			}
-			
+
 			// Draw enemies
 			render.setColor(Color.RED);
 			for (Enemy e : enemies) {
 				render.box(e.hitbox.x, e.hitbox.y, 0, e.hitbox.width, e.hitbox.height, 0);
 			}
 		}
-		
+
 		// Draw projectiles
 		render.setColor(Color.BLACK);
 		for (Projectile p : projectiles) {
 			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
 		}
-		
+
 		for (Projectile p : enemyProjectiles) {
 			render.circle(p.hitbox.x + p.hitbox.width / 2, p.hitbox.y + p.hitbox.width / 2, p.hitbox.width);
 		}
@@ -291,79 +292,77 @@ public class PlatformArena implements Screen {
 		} else if (meleeCooldown > 0.8f && !isLeft) {
 			render.arc(damage.x, damage.y, 150, 90, -90, 10);
 		}
-		
-		//Draw display with info
-		//Draw health bar
-		//Get fixed value:
-		//In Vector3, Y is down...
+
+		// Draw display with info
+		// Draw health bar
+		// Get fixed value:
+		// In Vector3, Y is down...
 		Vector3 p = camera.unproject(new Vector3(20, 560, 0));
 		Vector3 b = camera.unproject(new Vector3(0, 600, 0));
-		
+
 		render.setColor(Color.GRAY);
 		render.box(b.x, b.y, 0, 800, displayHeight, 0);
-		
+
 		render.setColor(Color.RED);
 		render.box(p.x, p.y, 0, 200 * (player.health / player.MAX_HEALTH), 30, 0);
 		render.setColor(Color.BLACK);
 		render.set(ShapeType.Line);
 		render.box(p.x, p.y, 0, 200, 30, 0);
-		
-		
-		
+
 		render.end();
-		
+
 		game.batch.begin();
 		if (sprites && !paused) {
-			
 
 			// Platform sprites
 			for (Rectangle platform : platforms) {
 				game.batch.draw(platformSprite, platform.x, platform.y - 10);
 			}
-			
-			//Enemy sprites
-			for (Enemy e: enemies) {
+
+			// Enemy sprites
+			for (Enemy e : enemies) {
 				game.batch.draw(e.getState(), e.hitbox.x, e.hitbox.y);
 			}
-			
+
 			// Star sprites
 			for (Star s : stars) {
 				if (!s.collected) {
 					game.batch.draw(starSprite, s.hitbox.x, s.hitbox.y);
 				}
 			}
-			
+
 			// Player sprite
 			game.batch.draw(player.getCharacterState(), player.hitbox.x, player.hitbox.y);
 
 		}
-		
-		//Text for menu:
-		//Health
+
+		// Text for menu:
+		// Health
 		game.desc.draw(game.batch, "Health", p.x + 5, p.y + 50);
 		game.desc.draw(game.batch, String.format("%.0f / %.0f", player.health, player.MAX_HEALTH), p.x + 5, p.y + 22);
-		
-		//Score
+
+		// Score
 		game.desc.draw(game.batch, "Score", p.x + 250, p.y + 50);
 		game.desc.draw(game.batch, String.format("%d", score), p.x + 250, p.y + 22);
-		
-		//Time
-		game.desc.draw(game.batch, "Time", p.x+ 400, p.y + 50);
-		game.desc.draw(game.batch, String.format("%02d:%02d:%2.0f", (int) time / 60, (int) time % 60, 100 * (time % 1) ), p.x + 400, p.y + 22);
-		
+
+		// Time
+		game.desc.draw(game.batch, "Time", p.x + 400, p.y + 50);
+		game.desc.draw(game.batch, String.format("%02d:%02d:%2.0f", (int) time / 60, (int) time % 60, 100 * (time % 1)),
+				p.x + 400, p.y + 22);
+
 		game.batch.end();
 	}
 
 	public void move() {
-		//TODO Move this
-		//Player invincibility, to be moved
+		// TODO Move this
+		// Player invincibility, to be moved
 		if (player.invincible > 0) {
 			player.invincible -= frame;
 		}
 		if (player.invincible < 0) {
 			player.invincible = 0;
 		}
-		
+
 		// Save last player y value
 		player.xLast = player.hitbox.x;
 		player.yLast = player.hitbox.y;
@@ -426,44 +425,48 @@ public class PlatformArena implements Screen {
 		} else {
 			player.onGround = true;
 		}
-		
+
 	}
 
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
-			//Save this
+			// Save this
 			e.yLast = e.hitbox.y;
-			
-			//Gravity
+
+			// Gravity
 			if (!e.flying) {
 				e.yMove -= gravity * frame;
 			}
-			
+
 			e.move(player.hitbox.x, player.hitbox.y, frame);
 			
-			//Keep in bounds
+			//Invinc
+			e.tick(frame);
+			
+			// Keep in bounds
 			if (e.hitbox.y < 0 && !e.flying) {
 				e.hitbox.y = 0;
 				e.onGround = true;
 			}
-			
+
 			// Enemy-projectile collision
 			for (Projectile p : projectiles) {
-				if (e.hitbox.overlaps(p.hitbox)) {
+				//Projectiles are now single hit
+				if (e.hitbox.overlaps(p.hitbox) && p.collisions < p.maxCollisions) {
 					// Mark projectiles as destroyed, instead of removing them now
 					// All projectiles are AOE for the time being
-					p.destroy = true;
+					p.collide(CollisionType.enemy);
 					e.damage(p.damage);
 				}
 			}
-			
-			//Player Collision
+
+			// Player Collision
 			if (e.hasCollided(player.hitbox)) {
 				player.damage(e.collisionDamage);
 			}
-			
-			//Attacking
+
+			// Attacking
 			if (e.canAttack(player.hitbox.x, player.hitbox.y, frame)) {
 				if (e.type == AttackType.single) {
 					enemyProjectiles.add(e.attackSingle(player.hitbox.x, player.hitbox.y, frame));
@@ -472,42 +475,42 @@ public class PlatformArena implements Screen {
 				}
 			}
 		}
-	
+
 		// ***************DEBUG***************//
 		// System.out.println(enemies.size);
-	
+
 		// Remove dead enemies
 		Iterator<Enemy> e = enemies.iterator();
 		while (e.hasNext()) {
 			Enemy en = e.next();
 			if (en.destroy) {
-				//Increment score:
-				//TODO (Change to be based on enemy type)
+				// Increment score:
+				// TODO (Change to be based on enemy type)
 				score += en.score;
 				if (en.hasDeathSummon) {
 					enemies.add(en.deathSummon());
 				}
-				
+
 				e.remove();
 
 				// Make respawning enemies for now
 				/*
-				if (MathUtils.random(0, 1) == 1 || enemies.size < 7)
-					enemies.add(new SeekerEnemy(800 * MathUtils.random(0, 1), 600 * MathUtils.random(0, 1)));
-				if (MathUtils.random(0, 1) == 1)
-					enemies.add(new SeekerEnemy(800 * MathUtils.random(0, 1), 600 * MathUtils.random(0, 1)));
-				*/
+				 * if (MathUtils.random(0, 1) == 1 || enemies.size < 7) enemies.add(new
+				 * SeekerEnemy(800 * MathUtils.random(0, 1), 600 * MathUtils.random(0, 1))); if
+				 * (MathUtils.random(0, 1) == 1) enemies.add(new SeekerEnemy(800 *
+				 * MathUtils.random(0, 1), 600 * MathUtils.random(0, 1)));
+				 */
 			}
 		}
-		
-		//Spawn enemies
-		for (Enemy en: waves.keys()) {
+
+		// Spawn enemies
+		for (Enemy en : waves.keys()) {
 			if (waves.get(en) <= time) {
 				enemies.add(en);
 				waves.remove(en);
 			}
 		}
-		
+
 	}
 
 	public void platformCollisions() {
@@ -527,9 +530,9 @@ public class PlatformArena implements Screen {
 				// Should not be necessary but i dunno
 				player.onGround = true;
 			}
-			
-			//Enemy checks
-			for (Enemy e: enemies) {
+
+			// Enemy checks
+			for (Enemy e : enemies) {
 				if (!e.flying && e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
 						&& e.yLast >= platform.y && e.hitbox.y < platform.y) {
 					e.yMove = 0;
@@ -539,7 +542,7 @@ public class PlatformArena implements Screen {
 			}
 		}
 	}
-	
+
 	public void doPlayerAttacks() {
 		// Shooting:
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && player.primaryCooldown == 0) {
@@ -559,7 +562,7 @@ public class PlatformArena implements Screen {
 			// Prevents underflow?
 			player.primaryCooldown = 0;
 		}
-		
+
 		// Melee attack?
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT) && meleeCooldown <= 0) {
 			// Check player direction
@@ -593,14 +596,16 @@ public class PlatformArena implements Screen {
 	}
 
 	public void doProjectileStuff(Array<Projectile> proj) {
-		
+
 		// Projectile work
 		for (Projectile p : proj) {
 			// Projectiles moving:
 			p.move(frame);
 			// Mark projectiles for removal
-			if (p.hitbox.x < 0 || p.hitbox.x > arenaWidth || p.hitbox.y > arenaHeight || p.hitbox.y < 0
-					|| p.checkAge()) {
+			if (p.hitbox.x < 0 || p.hitbox.x > arenaWidth || p.hitbox.y > arenaHeight || p.hitbox.y < 0) {
+				p.collide(CollisionType.wall);
+			}
+			if (p.checkAge()) {
 				p.destroy = true;
 			}
 		}
@@ -610,17 +615,20 @@ public class PlatformArena implements Screen {
 		while (iter.hasNext()) {
 			Projectile p = iter.next();
 			if (p.destroy) {
+				if (p.hasDeathCreate) {
+					proj.add(p.deathCreate());
+				}
 				iter.remove();
 			}
 		}
 	}
-	
+
 	public void playerProjectileCollisions() {
-		for (Projectile p: enemyProjectiles) {
+		for (Projectile p : enemyProjectiles) {
 			if (player.hitbox.overlaps(p.hitbox)) {
-				p.destroy = true;
+				p.collide(CollisionType.player);
 				player.damage(p.damage);
-			}	
+			}
 		}
 	}
 
@@ -650,22 +658,22 @@ public class PlatformArena implements Screen {
 					300 + 200 * MathUtils.cos(i * 30 * MathUtils.degreesToRadians)));
 		}
 	}
-	
+
 	public void initializeWaves() {
-		//Enemy of the day/week
+		// Enemy of the day/week
 		waves.put(new GroundEnemy(0, 0), 1f);
-		
-		//From 4 corners
+
+		// From 4 corners
 		waves.put(new SeekerEnemy(0, 0), 10f);
 		waves.put(new SeekerEnemy(0, arenaHeight), 10f);
 		waves.put(new SeekerEnemy(arenaWidth, arenaHeight), 10f);
 		waves.put(new SeekerEnemy(arenaWidth, 0), 10f);
-		
-		//From both sides
+
+		// From both sides
 		waves.put(new SeekerEnemy(0, arenaHeight / 2 + 50), 16f);
 		waves.put(new SeekerEnemy(0, arenaHeight / 2), 16f);
 		waves.put(new SeekerEnemy(0, arenaHeight / 2 - 50), 16f);
-		
+
 		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 + 50), 16f);
 		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2), 16f);
 		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 - 50), 16f);
@@ -674,30 +682,30 @@ public class PlatformArena implements Screen {
 	@Override
 	public void show() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

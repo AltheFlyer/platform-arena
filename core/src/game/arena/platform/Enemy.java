@@ -25,10 +25,16 @@ public class Enemy {
 	boolean hasDeathSummon;
 	Texture sprite;
 	float collisionDamage;
-	int score;
+	int score;	
+	final float INV_TIME;
+	float invincible;
 	AttackType type;
 	//More to come
 	
+	public enum AttackType {
+		none, single, multi 
+	}
+
 	/**
 	 * @param x1 The starting x - coordinate
 	 * @param y1 The starting y - coordinate
@@ -50,6 +56,12 @@ public class Enemy {
 		hasDeathSummon = false;
 		collisionDamage = 10;
 		score = 1;
+		
+		//Invin
+		//TODO tweak this thing
+		invincible = 0;
+		INV_TIME = 0.1f;
+		
 		//By default, do not use
 		sprite = new Texture("question_mark50x100.png");
 		type = AttackType.none;
@@ -60,6 +72,7 @@ public class Enemy {
 		hitbox.y += yMove * frame;
 	}
 	
+	
 	/**
 	 * 
 	 * @param x Player x
@@ -67,13 +80,25 @@ public class Enemy {
 	 * @param frame time since last frame
 	 */
 	public void move(float x, float y, float frame) {
-		hitbox.x += xMove * frame;
-		hitbox.y += yMove * frame;
+		this.move(frame);
+	}
+	
+	//For invincibility
+	public void tick(float frame) {
+		if (invincible > 0) {
+			invincible -= frame;
+		}
+		if (invincible < 0) {
+			invincible = 0;
+		}
 	}
 	
 	public void damage(float damage) {
-		health -= damage;
-		if (health <= 0) destroy = true;
+		if (invincible <= 0) {
+			health -= damage;
+			invincible = INV_TIME;
+			if (health <= 0) destroy = true;
+		}
 	}
 	
 	public Texture getState(){
@@ -107,10 +132,6 @@ public class Enemy {
 	//Attack with projectiles
 	public Array<Projectile> attackMulti(float x, float y, float frame) {
 		return null;
-	}
-	
-	public enum AttackType {
-		none, single, multi 
 	}
 	
 }

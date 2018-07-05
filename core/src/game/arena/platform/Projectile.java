@@ -1,10 +1,11 @@
 package game.arena.platform;
 
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * <p>
- * The base class for all projectiles (currently only including friendlies).<br>
+ * The base class for all projectiles (Friendly, and unfriendly).<br>
  * Includes position, velocity, age, and damage values.<br></br>
  * 
  * By default, projectiles do not use age checks, and move in straight lines<br>
@@ -23,30 +24,16 @@ public abstract class Projectile {
 	float age;
 	float maxAge;
 	float damage;
+	int collisions;
+	int maxCollisions;
 	boolean destroy;
+	boolean hasDeathCreate;
 	
-	//Default hitbox
-	/**
-	 * 
-	 * @param x1 The x position
-	 * @param y1 The y position
-	 * @param xV x movement
-	 * @param yV y movement
-	 * @param spd Predefined speed
-	 * @param a age
-	 * @param maxA maximum age
-	 * @param dmg damage
-	 */
-	public Projectile(float x1, float y1, float xV, float yV, 
-			float spd, float a, float maxA, float dmg) {
-		hitbox = new Rectangle(x1, y1, 3, 3);
-		speed = spd;
-		xMove = xV * speed;
-		yMove = yV * speed;
-		age = a;
-		maxAge = maxA;
-		destroy = false;
-		damage = dmg;
+	
+	public enum CollisionType {
+		wall,
+		player,
+		enemy
 	}
 	
 	//Predefined hitbox
@@ -73,6 +60,26 @@ public abstract class Projectile {
 		maxAge = maxA;
 		destroy = false;
 		damage = dmg;
+		collisions = 0;
+		maxCollisions = 1;
+		hasDeathCreate = false;
+	}
+	
+	//Default hitbox
+	/**
+	 * 
+	 * @param x1 The x position
+	 * @param y1 The y position
+	 * @param xV x movement
+	 * @param yV y movement
+	 * @param spd Predefined speed
+	 * @param a age
+	 * @param maxA maximum age
+	 * @param dmg damage
+	 */
+	public Projectile(float x1, float y1, float xV, float yV, 
+			float spd, float a, float maxA, float dmg) {
+		this(x1, y1, 3, 3, xV, yV, spd, a, maxA, dmg);
 	}
 	
 	/**
@@ -97,5 +104,25 @@ public abstract class Projectile {
 	public boolean checkAge() {
 		return false;
 	}
-
+	
+	public void collide(CollisionType type) {
+		//By default, only walls destroy projectiles
+		++collisions;
+		if (collisions >= maxCollisions || type == CollisionType.wall) {
+			destroy = true;
+		}
+	}
+	
+	public Projectile createSingle() {
+		return null;
+	}
+	
+	public Array<Projectile> createMulti() {
+		return null;
+	}
+	
+	//used on death
+	public Projectile deathCreate() {
+		return null;
+	}
 }
