@@ -22,7 +22,6 @@ public class ChaosTestLevel extends PlatformArena {
 		CENTRE = new Vector2(arenaWidth / 2, arenaHeight / 2);
 		LEFT = new Vector2(-10, 10);
 		RIGHT= new Vector2(arenaWidth, 10);
-		enemies.clear();
 		init();
 	}
 	

@@ -51,6 +51,6 @@ public class OrbitalEnemy extends Enemy {
 	
 	public Projectile attackSingle(float x, float y, float frame) {
 		destroy = true;
-		return new BasicProjectile(x + 25, y + 50, 10, 0.2f);
+		return new BasicProjectile(x, y, 10, 0.2f);
 	}
 }

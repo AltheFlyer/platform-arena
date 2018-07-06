@@ -48,8 +48,6 @@ public class TestLevel extends PlatformArena {
 		SPAWN_BOT_RIGHT = new Vector2(800, 225);
 		player.hitbox.x = 400 - player.hitbox.width;
 		player.hitbox.y = 0;
-		//Remove when debug spawns are removed
-		enemies.clear();
 		super.init();
 		
 	}

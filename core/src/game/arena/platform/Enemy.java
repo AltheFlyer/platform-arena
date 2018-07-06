@@ -15,8 +15,8 @@ import com.badlogic.gdx.utils.Array;
 public class Enemy {
 	
 	Rectangle hitbox;
-	float xMove;
-	float yMove;
+	float xCentre, yCentre;
+	float xMove, yMove;
 	float yLast;
 	float health;
 	boolean destroy;
@@ -29,6 +29,7 @@ public class Enemy {
 	final float INV_TIME;
 	float invincible;
 	AttackType type;
+	float gravity;
 	//More to come
 	
 	public enum AttackType {
@@ -46,6 +47,8 @@ public class Enemy {
 	 */
 	public Enemy(float x1, float y1, float w, float h, float xV, float yV, float hp) {
 		hitbox = new Rectangle(x1, y1, w, h);
+		xCentre = hitbox.x + (hitbox.width / 2);
+		yCentre = hitbox.y + (hitbox.height / 2);
 		yLast = hitbox.y;
 		xMove = xV;
 		yMove = yV;

@@ -115,10 +115,6 @@ public class PlatformArena implements Screen {
 		time = 0;
 		waves = new ObjectMap<Enemy, Float>();
 
-		// Load enemies (for now)
-		enemies.add(new DummyEnemy(375, 450));
-		enemies.add(new SeekerEnemy(300, 300));
-
 		// Initialize time count
 		frame = 0;
 
@@ -131,7 +127,7 @@ public class PlatformArena implements Screen {
 		damage = new Rectangle(0, 0, 0, 0);
 		isLeft = false;
 
-		// The big 5 (Calculating gravity and jump forces with preset values
+		// The big 5 (Calculating gravity and jump forces with preset values)
 		maxJumpHeight = 200;
 		minJumpHeight = 25;
 		maxJumpTime = 0.35f;
@@ -139,8 +135,9 @@ public class PlatformArena implements Screen {
 		jumpVelocity = gravity * maxJumpTime;
 		minJumpVelocity = (float) Math.sqrt(2 * gravity * minJumpHeight);
 		// ***************DEBUG***************//
-		//3265.3062 1142.8572
-		//System.out.println(gravity + " " + jumpVelocity);
+		// Values of gravity and jumpVelocity are:
+		// 3265.3062, 1142.8572
+		// System.out.println(gravity + " " + jumpVelocity);
 	}
 
 	// Because i need this separate to prevent crashes
@@ -168,7 +165,7 @@ public class PlatformArena implements Screen {
 		} else if (camera.position.y > arenaHeight - 300) {
 			camera.position.y = arenaHeight - 300;
 		}
-		
+
 		// Clear the screen
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -192,14 +189,19 @@ public class PlatformArena implements Screen {
 		draw();
 
 		if (!paused) {
+			
+			//Player movements
 			move();
 
+			playerPlatformCollisions();
+			
+			//Enemy movements and attacks
 			enemyStuff();
-
-			platformCollisions();
-
+			
+			//Player attacks
 			doPlayerAttacks();
 
+			//Projectile things
 			doProjectileStuff(projectiles);
 
 			doProjectileStuff(enemyProjectiles);
@@ -429,6 +431,24 @@ public class PlatformArena implements Screen {
 
 	}
 
+	public void playerPlatformCollisions() {
+		for (Rectangle platform : platforms) {
+			// Check if:
+			// Player is above platform, but would drop below it
+			// Player looks like they could actually stand on the platform
+			if (player.hitbox.x + player.hitbox.width > platform.x && player.hitbox.x < platform.x + platform.width
+					&& player.yLast >= platform.y && player.hitbox.y < platform.y) {
+				player.yMove = 0;
+				player.hitbox.y = platform.y;
+				// This is needed due to how onGround checks are made
+				// Should not be necessary but i dunno
+				player.onGround = true;
+			}
+		}
+		player.xCentre = player.hitbox.x + (player.hitbox.width / 2);
+		player.yCentre = player.hitbox.y + (player.hitbox.height / 2);
+	}
+
 	public void enemyStuff() {
 		// Enemy stuff
 		for (Enemy e : enemies) {
@@ -440,20 +460,34 @@ public class PlatformArena implements Screen {
 				e.yMove -= gravity * frame;
 			}
 
-			e.move(player.hitbox.x, player.hitbox.y, frame);
-			
-			//Invinc
+			e.move(player.xCentre, player.yCentre, frame);
+
+			// Invinc
 			e.tick(frame);
-			
+
 			// Keep in bounds
 			if (e.hitbox.y < 0 && !e.flying) {
 				e.hitbox.y = 0;
 				e.onGround = true;
 			}
 
+			// Platform Collisions
+			for (Rectangle platform : platforms) {
+
+				if (!e.flying && e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
+						&& e.yLast >= platform.y && e.hitbox.y < platform.y) {
+					e.yMove = 0;
+					e.hitbox.y = platform.y;
+					e.onGround = true;
+				}
+			}
+
+			e.xCentre = e.hitbox.x + (e.hitbox.width / 2);
+			e.yCentre = e.hitbox.y + (e.hitbox.height / 2);
+
 			// Enemy-projectile collision
 			for (Projectile p : projectiles) {
-				//Projectiles are now single hit
+				// Projectiles are now single hit
 				if (e.hitbox.overlaps(p.hitbox) && p.collisions < p.maxCollisions) {
 					// Mark projectiles as destroyed, instead of removing them now
 					// All projectiles are AOE for the time being
@@ -468,11 +502,15 @@ public class PlatformArena implements Screen {
 			}
 
 			// Attacking
-			if (e.canAttack(player.hitbox.x, player.hitbox.y, frame)) {
+			if (e.canAttack(player.xCentre, player.yCentre, frame)) {
+
+				// Single projectile attacks
 				if (e.type == AttackType.single) {
-					enemyProjectiles.add(e.attackSingle(player.hitbox.x, player.hitbox.y, frame));
+					enemyProjectiles.add(e.attackSingle(player.xCentre, player.yCentre, frame));
+
+					// Multi projectile attacks
 				} else if (e.type == AttackType.multi) {
-					enemyProjectiles.addAll(e.attackMulti(player.hitbox.x, player.hitbox.y, frame));
+					enemyProjectiles.addAll(e.attackMulti(player.xCentre, player.yCentre, frame));
 				}
 			}
 		}
@@ -514,45 +552,15 @@ public class PlatformArena implements Screen {
 
 	}
 
-	public void platformCollisions() {
-		// Collisions
-		// ***************DEBUG***************//
-		// System.out.println(player.yLast + " " + player.hitbox.y);
-
-		for (Rectangle platform : platforms) {
-			// Check if:
-			// Player is above platform, but would drop below it
-			// Player looks like they could actually stand on the platform
-			if (player.hitbox.x + player.hitbox.width > platform.x && player.hitbox.x < platform.x + platform.width
-					&& player.yLast >= platform.y && player.hitbox.y < platform.y) {
-				player.yMove = 0;
-				player.hitbox.y = platform.y;
-				// This is needed due to how onGround checks are made
-				// Should not be necessary but i dunno
-				player.onGround = true;
-			}
-
-			// Enemy checks
-			for (Enemy e : enemies) {
-				if (!e.flying && e.hitbox.x + e.hitbox.width > platform.x && e.hitbox.x < platform.x + platform.width
-						&& e.yLast >= platform.y && e.hitbox.y < platform.y) {
-					e.yMove = 0;
-					e.hitbox.y = platform.y;
-					e.onGround = true;
-				}
-			}
-		}
-	}
-
 	public void doPlayerAttacks() {
 		// Shooting:
 		if (Gdx.input.isButtonPressed(Buttons.LEFT) && player.primaryCooldown == 0) {
 			// Generate angle from horizontal to player and player to cursor
 			// Angles in radians
-			float angle = MathUtils.atan2(Mouse.y - (player.hitbox.y + 50), Mouse.x - (player.hitbox.x + 25));
-			projectiles.add(new BasicProjectile(player.hitbox.x + 25, player.hitbox.y + 50, angle));
-			projectiles.add(new PotionProjectile(player.hitbox.x + 25, player.hitbox.y + 50, angle));
-			projectiles.add(new BurstProjectile(player.hitbox.x + 25, player.hitbox.y + 50, angle));
+			float angle = MathUtils.atan2(Mouse.y - (player.yCentre), Mouse.x - (player.xCentre));
+			projectiles.add(new BasicProjectile(player.xCentre, player.yCentre, angle));
+			projectiles.add(new PotionProjectile(player.xCentre, player.yCentre, angle));
+			projectiles.add(new BurstProjectile(player.xCentre, player.yCentre, angle));
 			// Set cooldown
 			player.primaryCooldown = player.PRIMARY_COOLDOWN;
 		}
@@ -578,7 +586,7 @@ public class PlatformArena implements Screen {
 				isLeft = true;
 			} else {
 				// Same as above
-				damage = new Rectangle(player.hitbox.x + 25, player.hitbox.y, 150, 150);
+				damage = new Rectangle(player.xCentre, player.hitbox.y, 150, 150);
 				for (Enemy e : enemies) {
 					if (damage.overlaps(e.hitbox)) {
 						e.damage(5);
@@ -707,6 +715,7 @@ public class PlatformArena implements Screen {
 	@Override
 	public void hide() {
 		// TODO Auto-generated method stub
-
+		
 	}
+
 }

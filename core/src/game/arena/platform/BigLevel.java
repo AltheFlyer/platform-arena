@@ -10,7 +10,6 @@ public class BigLevel extends PlatformArena {
 		arenaWidth = 1600;
 		arenaHeight = 1200;
 		
-		enemies.clear();
 		init();
 	}
 	

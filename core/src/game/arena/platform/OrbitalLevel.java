@@ -12,7 +12,6 @@ public class OrbitalLevel extends PlatformArena {
 		super(game);
 		player.hitbox.x = 375;
 		player.hitbox.y = 600;
-		enemies.clear();
 		init();
 		//Prevents enemy attacks, this is a level for display
 		for (Enemy e: waves.keys()) {

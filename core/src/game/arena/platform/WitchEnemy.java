@@ -19,14 +19,14 @@ public class WitchEnemy extends Enemy {
 	}
 	
 	public void move(float x, float y, float frame) {
-		if (hitbox.x > x) {
+		if (xCentre > x) {
 			xMove = -20;
-		} else if (hitbox.x < x) {
+		} else if (xCentre < x) {
 			xMove = 20;
 		}
 		
 		//A little bit of padding room to prevent vibrating enemies
-		if (Math.abs(hitbox.x - x) < 10) {
+		if (Math.abs(xCentre - x) < 10) {
 			xMove = 0;
 		}
 		
@@ -46,14 +46,14 @@ public class WitchEnemy extends Enemy {
 	
 	public Projectile attackSingle(float x, float y, float frame) {
 		cooldown = ATTACK_COOLDOWN;
-		float xTemp = (x + 25 - hitbox.x);
-		float yTemp = (float) 200 + (y + 50 - hitbox.y);
+		float xTemp = (x - xCentre);
+		float yTemp = (float) 200 + (y - yCentre);
 		float pow = xTemp * xTemp + yTemp * yTemp;
 		if (pow > 422500) {
 			xTemp = (float) (xTemp / Math.sqrt(pow)) * 650;
 			yTemp = (float) (yTemp / Math.sqrt(pow)) * 650;
 		}
-		return new PotionProjectile(hitbox.x, hitbox.y, xTemp, 
+		return new PotionProjectile(xCentre, yCentre, xTemp, 
 				yTemp
 				, 10);
 	}

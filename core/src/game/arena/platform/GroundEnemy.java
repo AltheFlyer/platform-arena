@@ -18,18 +18,18 @@ public class GroundEnemy extends Enemy{
 	}
 
 	public void move(float x, float y, float frame) {
-		if (hitbox.x > x) {
+		if (xCentre > x) {
 			xMove = -100;
-		} else if (hitbox.x < x) {
+		} else if (xCentre < x) {
 			xMove = 100;
 		}
 		//A little bit of padding room to prevent vibrating enemies
-		if (Math.abs(hitbox.x - x) < 10) {
+		if (Math.abs(xCentre - x) < 10) {
 			xMove = 0;
 		}
 		
 		//Jumping
-		if (jumpCooldown <= 0 && onGround && y - 100 > hitbox.y) {
+		if (jumpCooldown <= 0 && onGround && y - yCentre > 125) {
 			yMove = 1100;
 			jumpCooldown = 1.5f;
 			onGround = false;
@@ -47,7 +47,7 @@ public class GroundEnemy extends Enemy{
 		
 		//Keeping this order prevents enemies from phasing through platforms
 		//Dropping through platforms
-		if (jumpCooldown <= 0 && onGround && y + 100 < hitbox.y) {
+		if (jumpCooldown <= 0 && onGround && yCentre - y > 75) {
 			hitbox.y -= 1;
 			yLast = hitbox.y;
 			onGround = false;

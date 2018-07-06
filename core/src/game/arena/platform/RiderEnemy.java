@@ -21,15 +21,15 @@ public class RiderEnemy extends Enemy {
 
 	public void move(float x, float y, float frame) {
 		//Make them charge
-		if (x + 10 < hitbox.x && xMove >= -400) {
+		if (x + 10 < xCentre && xMove >= -400) {
 			xMove -= 400 * frame;
-		} else if (x - 10 > hitbox.x && xMove <= 400) {
+		} else if (x - 10 > xCentre && xMove <= 400) {
 			xMove += 400 * frame;
 		}
 		if (xMove < -400) xMove = -400;
 		else if (xMove > 400) xMove = 400;
 		
-		if (y > hitbox.y + hitbox.height && jumpCooldown <= 0 && onGround) {
+		if (y - yCentre > 25  && jumpCooldown <= 0 && onGround) {
 			yMove = 1100;
 			jumpCooldown = 1.5f;
 			onGround = false;
@@ -46,7 +46,7 @@ public class RiderEnemy extends Enemy {
 		super.move(frame);
 		
 		//Dropping through platforms
-		if (jumpCooldown <= 1.3f && onGround && y + 100 < hitbox.y) {
+		if (jumpCooldown <= 1.3f && onGround && yCentre - y > 75) {
 			hitbox.y -= 1;
 			yLast = hitbox.y;
 			onGround = false;
