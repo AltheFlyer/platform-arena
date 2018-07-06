@@ -9,6 +9,11 @@ public class PotionProjectile extends Projectile{
 		hasDeathCreate = true;
 	}
 	
+	public PotionProjectile(float x1, float y1, float xV, float yV, float damage) {
+		super(x1, y1, xV, yV, 1, 0, 0, damage);
+		hasDeathCreate = false;
+	}
+	
 	public void move(float frame) {
 		//Gravity
 		yMove -= 400 * frame;
@@ -24,7 +29,7 @@ public class PotionProjectile extends Projectile{
 	}
 	
 	public Projectile deathCreate() {
-		return new SplashProjectile(hitbox.x - 10, hitbox.y - 10, 23, 23, 1, 0.2f);
+		return new SplashProjectile(hitbox.x - 10, hitbox.y - 10, 23, 23, damage, 0.2f);
 	}
 	
 }

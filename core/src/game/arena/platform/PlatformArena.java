@@ -139,7 +139,8 @@ public class PlatformArena implements Screen {
 		jumpVelocity = gravity * maxJumpTime;
 		minJumpVelocity = (float) Math.sqrt(2 * gravity * minJumpHeight);
 		// ***************DEBUG***************//
-		// System.out.println(gravity + " " + jumpVelocity);
+		//3265.3062 1142.8572
+		//System.out.println(gravity + " " + jumpVelocity);
 	}
 
 	// Because i need this separate to prevent crashes

@@ -40,6 +40,13 @@ public class ChaosTestLevel extends PlatformArena {
 		platforms.add(new Rectangle(1180, 450, 160, 1));
 		
 		platforms.add(new Rectangle(500, 600, 160, 1));
+		
+		platforms.add(new Rectangle(340, 750, 160, 1));
+		platforms.add(new Rectangle(660, 750, 160, 1));
+		platforms.add(new Rectangle(1140, 750, 160, 1));
+		
+		platforms.add(new Rectangle(820, 900, 160, 1));
+		platforms.add(new Rectangle(980, 900, 160, 1));
 	}
 	
 	public void initializeStars() {
@@ -56,9 +63,11 @@ public class ChaosTestLevel extends PlatformArena {
 		waves.put(new ShooterEnemy(LEFT), 4f);
 		waves.put(new ShooterEnemy(RIGHT), 4f);
 		
-		for (int i = 0; i < 25; ++i) {
-			waves.put(new RiderEnemy(1120, 455), i + 10f);
-		}
-		
+		waves.put(new WitchEnemy(CENTRE), 5f);
+		waves.put(new WitchEnemy(CENTRE.x + 100, CENTRE.y), 6f);
+		waves.put(new WitchEnemy(LEFT), 8f);
+		waves.put(new WitchEnemy(RIGHT), 8f);
+		waves.put(new WitchEnemy(LEFT), 11f);
+		waves.put(new WitchEnemy(RIGHT), 11f);
 	}
 }
