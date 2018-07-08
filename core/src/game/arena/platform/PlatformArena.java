@@ -69,7 +69,11 @@ public class PlatformArena implements Screen {
 	boolean paused;
 
 	// Enemy Waves
-	ObjectMap<Enemy, Float> waves;
+	Wave wave;
+	Wave[] waves;
+	int maxWaves;
+	int currentWave;
+	
 	// Global timer
 	float time;
 	// Keeps delta time
@@ -113,7 +117,10 @@ public class PlatformArena implements Screen {
 
 		// Enemy Waves
 		time = 0;
-		waves = new ObjectMap<Enemy, Float>();
+		wave = new Wave();
+		maxWaves = 1;
+		currentWave = 0;
+		waves = new Wave[maxWaves];
 
 		// Initialize time count
 		frame = 0;
@@ -145,7 +152,12 @@ public class PlatformArena implements Screen {
 		// Default level
 		initializePlatforms();
 		initializeStars();
+		waves = new Wave[maxWaves];
+		for (int i = 0; i < maxWaves; ++i) {
+			waves[i] = new Wave();
+		}
 		initializeWaves();
+		wave = waves[0];
 	}
 
 	@Override
@@ -154,7 +166,7 @@ public class PlatformArena implements Screen {
 		// System.out.println(player.hitbox.x + " " + player.hitbox.y);
 		// Update Camera (does nothing if in 800x600 level or smaller)
 		camera.position.x = (int) player.hitbox.x;
-		camera.position.y = (int) player.hitbox.y - displayHeight;
+		camera.position.y = (int) player.hitbox.y - (displayHeight / 2);
 		if (camera.position.x < 400) {
 			camera.position.x = 400;
 		} else if (camera.position.x > arenaWidth - 400) {
@@ -543,13 +555,19 @@ public class PlatformArena implements Screen {
 		}
 
 		// Spawn enemies
-		for (Enemy en : waves.keys()) {
-			if (waves.get(en) <= time) {
+		wave.time += frame;
+		System.out.println(wave.time);
+		for (Enemy en : wave.enemies.keys()) {
+			if (wave.enemies.get(en) <= wave.time) {
 				enemies.add(en);
-				waves.remove(en);
+				wave.enemies.remove(en);
 			}
 		}
-
+		if (((enemies.size == 0 && wave.enemies.size == 0) || wave.time > wave.maxTime) && currentWave < maxWaves - 1 && wave.time > wave.minTime) {
+			++currentWave;
+			wave = waves[currentWave];
+		}
+		if (wave.enemies.size == 0 && enemies.size == 0 && currentWave == maxWaves - 1) System.out.println("Level Complete");
 	}
 
 	public void doPlayerAttacks() {
@@ -669,23 +687,24 @@ public class PlatformArena implements Screen {
 	}
 
 	public void initializeWaves() {
+		
 		// Enemy of the day/week
-		waves.put(new GroundEnemy(0, 0), 1f);
+		waves[0].put(new GroundEnemy(0, 0), 1f);
 
 		// From 4 corners
-		waves.put(new SeekerEnemy(0, 0), 10f);
-		waves.put(new SeekerEnemy(0, arenaHeight), 10f);
-		waves.put(new SeekerEnemy(arenaWidth, arenaHeight), 10f);
-		waves.put(new SeekerEnemy(arenaWidth, 0), 10f);
+		waves[0].put(new SeekerEnemy(0, 0), 10f);
+		waves[0].put(new SeekerEnemy(0, arenaHeight), 10f);
+		waves[0].put(new SeekerEnemy(arenaWidth, arenaHeight), 10f);
+		waves[0].put(new SeekerEnemy(arenaWidth, 0), 10f);
 
 		// From both sides
-		waves.put(new SeekerEnemy(0, arenaHeight / 2 + 50), 16f);
-		waves.put(new SeekerEnemy(0, arenaHeight / 2), 16f);
-		waves.put(new SeekerEnemy(0, arenaHeight / 2 - 50), 16f);
+		waves[0].put(new SeekerEnemy(0, arenaHeight / 2 + 50), 16f);
+		waves[0].put(new SeekerEnemy(0, arenaHeight / 2), 16f);
+		waves[0].put(new SeekerEnemy(0, arenaHeight / 2 - 50), 16f);
 
-		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 + 50), 16f);
-		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2), 16f);
-		waves.put(new SeekerEnemy(arenaWidth, arenaHeight / 2 - 50), 16f);
+		waves[0].put(new SeekerEnemy(arenaWidth, arenaHeight / 2 + 50), 16f);
+		waves[0].put(new SeekerEnemy(arenaWidth, arenaHeight / 2), 16f);
+		waves[0].put(new SeekerEnemy(arenaWidth, arenaHeight / 2 - 50), 16f);
 	}
 
 	@Override

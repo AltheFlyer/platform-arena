@@ -22,6 +22,7 @@ public class ChaosTestLevel extends PlatformArena {
 		CENTRE = new Vector2(arenaWidth / 2, arenaHeight / 2);
 		LEFT = new Vector2(-10, 10);
 		RIGHT= new Vector2(arenaWidth, 10);
+		maxWaves = 3;
 		init();
 	}
 	
@@ -57,16 +58,25 @@ public class ChaosTestLevel extends PlatformArena {
 	}
 	
 	public void initializeWaves() {
-		waves.put(new ShooterEnemy(CENTRE), 1f);
-		waves.put(new ShooterEnemy(CENTRE), 3f);
-		waves.put(new ShooterEnemy(LEFT), 4f);
-		waves.put(new ShooterEnemy(RIGHT), 4f);
+		waves[0].put(new ShooterEnemy(CENTRE), 1f);
+		waves[0].put(new ShooterEnemy(CENTRE), 3f);
+		waves[0].put(new ShooterEnemy(LEFT), 4f);
+		waves[0].put(new ShooterEnemy(RIGHT), 4f);
 		
-		waves.put(new WitchEnemy(CENTRE), 5f);
-		waves.put(new WitchEnemy(CENTRE.x + 100, CENTRE.y), 6f);
-		waves.put(new WitchEnemy(LEFT), 8f);
-		waves.put(new WitchEnemy(RIGHT), 8f);
-		waves.put(new WitchEnemy(LEFT), 11f);
-		waves.put(new WitchEnemy(RIGHT), 11f);
+		waves[0].put(new WitchEnemy(CENTRE), 5f);
+		waves[0].put(new WitchEnemy(CENTRE.x + 100, CENTRE.y), 6f);
+		waves[0].put(new WitchEnemy(LEFT), 8f);
+		waves[0].put(new WitchEnemy(RIGHT), 8f);
+		waves[0].put(new WitchEnemy(LEFT), 11f);
+		waves[0].put(new WitchEnemy(RIGHT), 11f);
+		
+		waves[1] = new Wave(10, 10, 15);
+		for (int i = 0; i < 5; ++i) {
+			waves[1].put(new GroundEnemy(RIGHT), i);
+		}
+		
+		waves[2] = new Wave(5, 0, Integer.MAX_VALUE);
+		waves[2].put(new RiderEnemy(LEFT), 0f);
+		
 	}
 }

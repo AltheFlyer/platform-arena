@@ -62,7 +62,8 @@ public class LevelData {
 			return "A large level (1600px x 1200px) to show orthographic camera movement and"
 					+ " new Ground Enemy and Rider Enemy movement.";
 		} else if (level.equals("ChaosTestLevel")) {
-			return "A large level with abnormal platforms and stars for testing of more new enemies.";
+			return "A large level with abnormal platforms and stars for testing of more new enemies. " +
+		"Also the first demonstration of a multi-wave level.";
 		}else {
 			return "DEFAULT DATA";
 		}
