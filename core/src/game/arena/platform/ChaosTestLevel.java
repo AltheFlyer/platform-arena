@@ -70,6 +70,8 @@ public class ChaosTestLevel extends PlatformArena {
 		waves[0].put(new WitchEnemy(LEFT), 11f);
 		waves[0].put(new WitchEnemy(RIGHT), 11f);
 		
+		waves[0].put(new AirChargerEnemy(CENTRE), 1f);
+		
 		waves[1] = new Wave(10, 10, 15);
 		for (int i = 0; i < 5; ++i) {
 			waves[1].put(new GroundEnemy(RIGHT), i);

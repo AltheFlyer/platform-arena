@@ -556,7 +556,7 @@ public class PlatformArena implements Screen {
 
 		// Spawn enemies
 		wave.time += frame;
-		System.out.println(wave.time);
+		//System.out.println(wave.time);
 		for (Enemy en : wave.enemies.keys()) {
 			if (wave.enemies.get(en) <= wave.time) {
 				enemies.add(en);
