@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 /**
  * <p>
- * The main collectible object in the game.
+ * The screen collectible object in the game.
  * </p>
  * 
  * @author Allen Liu

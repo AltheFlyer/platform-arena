@@ -1,11 +1,15 @@
 package game.arena.platform;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Character {
 	
 	Rectangle hitbox;
+	//Centre of hitbox
+	float xCentre, yCentre;
 	float xMove, yMove;
 	float xLast, yLast;
 	float primaryCooldown;
@@ -24,6 +28,8 @@ public class Character {
 	
 	public Character(float x1, float y1, float pCD, float sCD, float hp) {
 		hitbox = new Rectangle(x1, y1, 50, 100);
+		xCentre = hitbox.x + (hitbox.width / 2);
+		yCentre = hitbox.y + (hitbox.height / 2);
 		xLast = x1;
 		yLast = y1;
 		xMove = 0;
@@ -61,7 +67,9 @@ public class Character {
 	}
 	
 	public void damage(float dam) {
-		health -= dam;
-		invincible = INV_TIME;
+		if (invincible <= 0) {
+			health -= dam;
+			invincible = INV_TIME;
+		}
 	}
 }

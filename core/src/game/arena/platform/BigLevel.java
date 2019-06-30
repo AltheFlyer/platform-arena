@@ -10,7 +10,6 @@ public class BigLevel extends PlatformArena {
 		arenaWidth = 1600;
 		arenaHeight = 1200;
 		
-		enemies.clear();
 		init();
 	}
 	
@@ -43,7 +42,8 @@ public class BigLevel extends PlatformArena {
 
 	public void initializeWaves() {
 		for (int i = 0; i< 20; i ++) {
-			waves.put(new GroundEnemy(arenaWidth, 0), (float) i);
+			//waves[0].put(new GroundEnemy(arenaWidth, 0), (float) i);
+			waves[0].put(new RiderEnemy(arenaWidth, 0), (float) i);
 		}
 	}
 }

@@ -3,6 +3,7 @@ package game.arena.platform;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 //An enemy that spawns close by the player and rotates 360 degrees around before attacking
 public class OrbitalEnemy extends Enemy {
@@ -17,6 +18,8 @@ public class OrbitalEnemy extends Enemy {
 		sprite = new Texture("seeker_enemy.png");
 		flying = true;
 		distance = 200;
+		score = 2;
+		type = AttackType.single;
 	}
 	
 	public OrbitalEnemy(float x1, float y1, float dist) {
@@ -39,7 +42,15 @@ public class OrbitalEnemy extends Enemy {
 		hitbox.y = y + distance * MathUtils.sin(angle * MathUtils.degreesToRadians);
 		
 		angle -= 72 * frame;
-		
-		//Something happens when 1 full revolution is made around the player
+	}
+	
+	//The enemy does its attack after doing a full rotation
+	public boolean canAttack(float x, float y, float frame) {
+		return angle < -270;
+	}
+	
+	public Projectile attackSingle(float x, float y, float frame) {
+		destroy = true;
+		return new BasicProjectile(x, y, 10, 0.2f);
 	}
 }

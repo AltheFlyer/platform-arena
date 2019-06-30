@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+/**
+ * @deprecated
+ */
 public class Arena extends Game {
 	
 	SpriteBatch batch;

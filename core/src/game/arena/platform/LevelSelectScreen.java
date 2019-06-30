@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -35,12 +34,10 @@ public class LevelSelectScreen implements Screen {
 
 		// Level Buttons
 		levels = new Array<LevelData>();
-		levels.add(new LevelData("Test Level", "The default testing level, showing off whatever new content or features are added.",
-				20, 450, 75, 75, "TestLevel"));
-		levels.add(new LevelData("Orbital Level", "A Level to showcase the orbital enemy (with varying distances from player).",
-				115, 450, 75, 75, "OrbitalLevel"));
-		levels.add(new LevelData("Big Level", "A large level (1600px x 1200px) to show orthographic camera movement and new Ground Enemy movement.",
-				210, 450, 75, 75, "BigLevel"));
+		levels.add(new LevelData("Test Level", 20, 450, 75, 75, "TestLevel"));
+		levels.add(new LevelData("Orbital Level", 115, 450, 75, 75, "OrbitalLevel"));
+		levels.add(new LevelData("Big Level", 210, 450, 75, 75, "BigLevel"));
+		levels.add(new LevelData("Chaos Level", 305, 450, 75, 75, "ChaosTestLevel"));
 	}
 
 	@Override
@@ -67,10 +64,10 @@ public class LevelSelectScreen implements Screen {
 		// Draw Title:
 		game.font.draw(game.batch, "Level Select", 20, 587);
 
-		for (LevelData l: levels) {
+		for (LevelData l : levels) {
 			l.check(Mouse.x, Mouse.y, game);
 		}
-		
+
 		game.batch.end();
 
 		// Use this to adjust text placements

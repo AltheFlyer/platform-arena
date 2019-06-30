@@ -48,8 +48,7 @@ public class TestLevel extends PlatformArena {
 		SPAWN_BOT_RIGHT = new Vector2(800, 225);
 		player.hitbox.x = 400 - player.hitbox.width;
 		player.hitbox.y = 0;
-		//Remove when debug spawns are removed
-		enemies.clear();
+		
 		super.init();
 		
 	}
@@ -82,55 +81,55 @@ public class TestLevel extends PlatformArena {
 	
 	public void initializeWaves() {
 		//Rotation enemy?
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 0f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 0f);
 		
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 25f);
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 26f);
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 27f);
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 28f);
-		waves.put(new OrbitalEnemy(SPAWN_TOP_LEFT), 29f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 25f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 26f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 27f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 28f);
+		waves[0].put(new OrbitalEnemy(SPAWN_TOP_LEFT), 29f);
 		
 		/*
-		waves.put(new SeekerEnemy(SPAWN_TOP_LEFT), 0f);
-		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 0f);
-		waves.put(new SeekerEnemy(SPAWN_BOT_LEFT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_LEFT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_LEFT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_LEFT), 0f);
 		
-		waves.put(new SeekerEnemy(SPAWN_TOP_RIGHT), 0f);
-		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 0f);
-		waves.put(new SeekerEnemy(SPAWN_BOT_RIGHT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_RIGHT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_RIGHT), 0f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_RIGHT), 0f);
 		*/
 		
 		//Lets try something legit:
 
-		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 5f);
-		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 5f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_LEFT), 5f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_RIGHT), 5f);
 		
-		waves.put(new SeekerEnemy(SPAWN_TOP_LEFT), 10f);
-		waves.put(new SeekerEnemy(SPAWN_TOP_RIGHT), 10f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_LEFT), 10f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_RIGHT), 10f);
 		
-		waves.put(new SeekerEnemy(SPAWN_BOT_LEFT), 15f);
-		waves.put(new SeekerEnemy(SPAWN_BOT_RIGHT), 15f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_LEFT), 15f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_RIGHT), 15f);
 		
-		waves.put(new GroundEnemy(SPAWN_BOT_LEFT), 20f);
-		waves.put(new GroundEnemy(SPAWN_BOT_RIGHT), 20f);
+		waves[0].put(new GroundEnemy(SPAWN_BOT_LEFT), 20f);
+		waves[0].put(new GroundEnemy(SPAWN_BOT_RIGHT), 20f);
 		
 		//Testing new enemies:
-		waves.put(new RadialSeekerEnemy(SPAWN_TOP_LEFT), 20f);
-		waves.put(new RadialSeekerEnemy(SPAWN_MID_LEFT), 20f);
-		waves.put(new RadialSeekerEnemy(SPAWN_BOT_LEFT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_TOP_LEFT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_MID_LEFT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_BOT_LEFT), 20f);
 		
-		waves.put(new RadialSeekerEnemy(SPAWN_TOP_RIGHT), 20f);
-		waves.put(new RadialSeekerEnemy(SPAWN_MID_RIGHT), 20f);
-		waves.put(new RadialSeekerEnemy(SPAWN_BOT_RIGHT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_TOP_RIGHT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_MID_RIGHT), 20f);
+		waves[0].put(new RadialSeekerEnemy(SPAWN_BOT_RIGHT), 20f);
 		
-		waves.put(new SeekerEnemy(SPAWN_MID_LEFT), 22f);
-		waves.put(new SeekerEnemy(SPAWN_MID_RIGHT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_LEFT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_MID_RIGHT), 22f);
 		
-		waves.put(new SeekerEnemy(SPAWN_TOP_LEFT), 22f);
-		waves.put(new SeekerEnemy(SPAWN_TOP_RIGHT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_LEFT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_TOP_RIGHT), 22f);
 		
-		waves.put(new SeekerEnemy(SPAWN_BOT_LEFT), 22f);
-		waves.put(new SeekerEnemy(SPAWN_BOT_RIGHT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_LEFT), 22f);
+		waves[0].put(new SeekerEnemy(SPAWN_BOT_RIGHT), 22f);
 		
 		
 	}

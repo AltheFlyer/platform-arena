@@ -20,8 +20,8 @@ public class RadialSeekerEnemy extends Enemy {
 		//I have no clue anymore
 		//This thing is buggy and i have no clue why anymore
 		//It works 99% of the time
-		if (Math.pow(x - hitbox.x, 2) + Math.pow(y - hitbox.y, 2) > 1) {
-			float target = MathUtils.atan2(y - hitbox.y, x - hitbox.x);
+		if (Math.pow(x - xCentre, 2) + Math.pow(y - yCentre, 2) > 1) {
+			float target = MathUtils.atan2(y - yCentre, x - xCentre);
 			float velocity = MathUtils.atan2(yMove, xMove);
 			float angle = (target - velocity) * MathUtils.radiansToDegrees;
 			if (angle > 180) angle -= 360;
