@@ -2,7 +2,6 @@ package game.arena.platform.entities.enemies;
 
 import game.arena.platform.entities.Mob;
 import game.arena.platform.screen.Level;
-import game.arena.platform.utils.Collidable;
 
 /**
  * [Enemy]
@@ -11,19 +10,17 @@ import game.arena.platform.utils.Collidable;
  * @author Allen Liu
  * @since June 30, 2019
  */
-public class Enemy extends Mob {
+public abstract class Enemy extends Mob {
 
-    public Enemy(Level level) {
-        super(level);
+    public Enemy(Level level, float maxHealth) {
+        super(level, maxHealth);
     }
 
     @Override
-    public void move(float delta) {
-
-    }
+    public abstract void move(float delta);
 
     @Override
-    public void collide(Collidable object) {
-
+    public boolean isFriendly() {
+        return false;
     }
 }

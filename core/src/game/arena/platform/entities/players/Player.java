@@ -6,8 +6,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import game.arena.platform.entities.Mob;
+import game.arena.platform.entities.MobileEntity;
 import game.arena.platform.screen.Level;
 import com.badlogic.gdx.math.Rectangle;
 import game.arena.platform.terrain.Platform;
@@ -21,7 +23,7 @@ import game.arena.platform.utils.MiniMath;
  * @author Allen Liu
  * @since June 30, 2019
  */
-public class Player extends Mob {
+public abstract class Player extends Mob {
 
     //Player physics values, in pixels
     private static float maxJumpHeight = 200;
@@ -31,18 +33,15 @@ public class Player extends Mob {
     private static float jumpVelocity;
     private static float gravity;
 
-    private Vector2 velocity;
+    protected Vector2 velocity;
 
     private float walkAngle;
-
-    private float health;
-    private final float MAX_HEALTH;
 
     private float invincibleTime;
     private final float MAX_INVINCIBILITY_TIME = 1f;
 
-    private boolean isGrounded;
-    private boolean ignorePlatforms;
+    protected boolean isGrounded;
+    protected boolean ignorePlatforms;
 
     Array<Vector2> locations;
 
@@ -64,8 +63,7 @@ public class Player extends Mob {
      * @param hp the maximum health of the player
      */
     public Player(Level level, float x, float y, float hp) {
-        super(level);
-        MAX_HEALTH = hp;
+        super(level, hp);
 
         position = new Vector2(x, y);
         lastPosition = new Vector2(x, y);
@@ -85,6 +83,7 @@ public class Player extends Mob {
      * Moves the player and updates velocity values
      * @param delta the time since the last move in seconds
      */
+    @Override
     public void move(float delta) {
         lastPosition = new Vector2(position);
 
@@ -154,11 +153,17 @@ public class Player extends Mob {
         locations.add(position);
     }
 
+    @Override
+    public boolean isFriendly() {
+        return true;
+    }
+
     /**
      * [draw]
      * draws the player
      * @param render the shape renderer that is used to draw
      */
+    @Override
     public void draw(ShapeRenderer render) {
         if (isGrounded) {
             render.setColor(Color.RED);
@@ -185,7 +190,6 @@ public class Player extends Mob {
         if (!ignorePlatforms && object instanceof Platform) {
             //Check if player was above the platform previously
             //Done by intersection of line
-            //mx + b == mx + b
 
             if (position.y <= lastPosition.y) {
                 Platform platform = (Platform) object;
@@ -231,7 +235,8 @@ public class Player extends Mob {
      * damages the player by some amount
      * @param damage the amount of damage taken
      */
-    public void damagePlayer(float damage) {
+    @Override
+    public void damageEntity(float damage) {
         if (invincibleTime <= 0) {
             health -= damage;
             invincibleTime = MAX_INVINCIBILITY_TIME;
