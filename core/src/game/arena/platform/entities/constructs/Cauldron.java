@@ -26,9 +26,6 @@ public class Cauldron extends MobileEntity {
     private int power;
 
     private final float gravity = 1100f;
-    private Vector2 velocity;
-
-    private boolean isGrounded;
 
     public Cauldron(Level level, Vector2 position) {
         super(level);
@@ -67,12 +64,10 @@ public class Cauldron extends MobileEntity {
     @Override
     public void move(float delta) {
         lastPosition = new Vector2(position);
-        if (!isGrounded) {
-            velocity.y -= gravity * delta;
-            changePosition(new Vector2(0, velocity.y * delta));
-        } else {
-            velocity.y = 0;
-        }
+
+        addGravity(gravity, delta);
+
+        changePosition(new Vector2(0, velocity.y * delta));
 
         if (position.y < 0) {
             setPosition(position.x, 0);
@@ -90,23 +85,7 @@ public class Cauldron extends MobileEntity {
                 timer += 2;
             }
         }
-        if (object instanceof Platform) {
-            if (position.y <= lastPosition.y) {
-                Platform platform = (Platform) object;
-                float platformSlope = (platform.getEndPoint().y - platform.getStartPoint().y) / (platform.getEndPoint().x - platform.getStartPoint().x);
-                float platformIntercept = platform.getStartPoint().y - (platformSlope * platform.getStartPoint().x);
-
-                float x = position.x + (hitbox.width / 2);
-                float y = platformSlope * x + platformIntercept;
-
-                if ((MiniMath.isBetween(y, position.y, lastPosition.y) &&
-                        MiniMath.isBetween(x, platform.getStartPoint().x, platform.getEndPoint().x) &&
-                        MiniMath.isBetween(y, platform.getStartPoint().y, platform.getEndPoint().y))) {
-                    setPosition(position.x, y);
-                    isGrounded = true;
-                }
-            }
-        }
+        hasPlatformCollision(object);
     }
 
 }

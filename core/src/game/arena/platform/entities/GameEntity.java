@@ -22,9 +22,12 @@ public abstract class GameEntity implements Collidable {
 
     protected boolean isDestroyed;
 
+    protected boolean isGrounded;
+
     public GameEntity(Level level) {
         this.level = level;
         isDestroyed = false;
+        isGrounded = false;
     }
 
     /**
@@ -70,6 +73,14 @@ public abstract class GameEntity implements Collidable {
 
     public boolean isDestroyed() {
         return isDestroyed;
+    }
+
+    public boolean isGrounded() {
+        return isGrounded;
+    }
+
+    public void setGrounding(boolean g) {
+        isGrounded = g;
     }
 
 }

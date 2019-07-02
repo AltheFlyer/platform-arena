@@ -18,6 +18,7 @@ public abstract class Mob extends MobileEntity {
     public Mob(Level level, float maxHealth) {
         super(level);
         this.MAX_HEALTH = maxHealth;
+        this.health = maxHealth;
     }
 
     /**

@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import game.arena.platform.entities.Mob;
 import game.arena.platform.entities.MobileEntity;
-import game.arena.platform.entities.enemies.Enemy;
-import game.arena.platform.entities.players.Player;
 import game.arena.platform.screen.Level;
 import game.arena.platform.utils.Collidable;
 
@@ -21,7 +19,6 @@ import game.arena.platform.utils.Collidable;
 public class Projectile extends MobileEntity {
 
     protected boolean isFriendly;
-    protected Vector2 velocity;
 
     protected int damage;
 

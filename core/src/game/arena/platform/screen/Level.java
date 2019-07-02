@@ -2,6 +2,7 @@ package game.arena.platform.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -93,7 +94,7 @@ public class Level implements Screen {
         platforms.add(new Platform(new Vector2(100, 320), new Vector2(500, 300)));
         platforms.add(new Platform(new Vector2(100, 100), new Vector2(500, 120)));
 
-        enemies.add(new WalkerEnemy(this, 100, 100));
+        enemies.add(new WalkerEnemy(this, 100, 500));
 
         for (int i = 0; i < platforms.size; ++i) {
             System.out.println(platforms.get(i).getAngle() / MathUtils.PI);
@@ -134,6 +135,11 @@ public class Level implements Screen {
         mouse = new Vector3(camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0)));
 
         moveEntities(delta);
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            enemies.add(new WalkerEnemy(this, mouse.x, mouse.y));
+            System.out.println(enemies.size);
+        }
 
         //Keep in bounds, equality checks ensure that collisions exist even without constant gravity
         if (player.getX() <= 0) {

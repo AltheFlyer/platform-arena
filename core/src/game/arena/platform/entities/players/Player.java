@@ -33,14 +33,11 @@ public abstract class Player extends Mob {
     private static float jumpVelocity;
     private static float gravity;
 
-    protected Vector2 velocity;
-
     private float walkAngle;
 
     private float invincibleTime;
     private final float MAX_INVINCIBILITY_TIME = 1f;
 
-    protected boolean isGrounded;
     protected boolean ignorePlatforms;
 
     Array<Vector2> locations;
@@ -120,16 +117,15 @@ public abstract class Player extends Mob {
 
         ignorePlatforms = Gdx.input.isKeyPressed(Keys.S);
 
+        addGravity(gravity, delta);
+
         //Gravity
         if (isGrounded) {
-            velocity.y = 0;
             //Jumping
             if (Gdx.input.isKeyJustPressed(Keys.SPACE)) {
                 velocity.y = jumpVelocity;
                 isGrounded = false;
             }
-        } else {
-            velocity.y -= gravity * delta;
         }
 
         if (!Gdx.input.isKeyPressed(Keys.SPACE)) {
@@ -187,46 +183,8 @@ public abstract class Player extends Mob {
 
     @Override
     public void collide(Collidable object) {
-        if (!ignorePlatforms && object instanceof Platform) {
-            //Check if player was above the platform previously
-            //Done by intersection of line
-
-            if (position.y <= lastPosition.y) {
-                Platform platform = (Platform) object;
-                float platformSlope = (platform.getEndPoint().y - platform.getStartPoint().y) / (platform.getEndPoint().x - platform.getStartPoint().x);
-                float platformIntercept = platform.getStartPoint().y - (platformSlope * platform.getStartPoint().x);
-
-                float x = position.x + (hitbox.width / 2);
-                float y = platformSlope * x + platformIntercept;
-
-                if ((MiniMath.isBetween(y, position.y, lastPosition.y) &&
-                        MiniMath.isBetween(x, platform.getStartPoint().x, platform.getEndPoint().x) &&
-                        MiniMath.isBetween(y, platform.getStartPoint().y, platform.getEndPoint().y))) {
-                    setPosition(position.x, y);
-                    isGrounded = true;
-                    walkAngle = platform.getAngle();// % (MathUtils.PI / 2);
-                }
-            }
-
-            /*
-            Platform platform = (Platform) object;
-            Vector2 m = new Vector2(position.x - lastPosition.x, position.y - lastPosition.y);
-            Vector2 n = new Vector2(platform.getEndPoint().x - platform.getStartPoint().x, platform.getEndPoint().y - platform.getStartPoint().y);
-
-
-            float t2 = (m.y * (platform.getStartPoint().x - lastPosition.x) + m.x * (lastPosition.y - platform.getStartPoint().y)) /
-                    (m.x * n.y - m.y * n.x);
-            float t1 = (platform.getStartPoint().x + n.x * t2 - lastPosition.x) / m.x;
-
-            if (MiniMath.isBetween(t1, 0, 1) && MiniMath.isBetween(t2, 0, 1)) {
-                float x = lastPosition.x + m.x * t1;
-                float y = lastPosition.y + m.y * t1;
-                setPosition(x, y);
-                isGrounded = true;
-                walkAngle = platform.getAngle();
-            }
-            */
-
+        if (!ignorePlatforms && hasPlatformCollision(object)) {
+            walkAngle = ((Platform) object).getAngle();// % (MathUtils.PI / 2);
         }
     }
 

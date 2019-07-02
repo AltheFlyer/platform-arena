@@ -21,7 +21,7 @@ public class PotionProjectile extends Projectile {
 
     @Override
     public void move(float delta) {
-        velocity.y -= 1000 * delta;
+        addGravity(1000, delta);
         super.move(delta);
 
         if (position.y <= 0) {
@@ -32,24 +32,8 @@ public class PotionProjectile extends Projectile {
     @Override
     public void collide(Collidable object) {
         super.collide(object);
-        if (object instanceof Platform) {
-            System.out.println("y");
-            //Check if player was above the platform previously
-            //Done by intersection of line
-            if (position.y <= lastPosition.y) {
-                Platform platform = (Platform) object;
-                float platformSlope = (platform.getEndPoint().y - platform.getStartPoint().y) / (platform.getEndPoint().x - platform.getStartPoint().x);
-                float platformIntercept = platform.getStartPoint().y - (platformSlope * platform.getStartPoint().x);
-
-                float x = position.x + (hitbox.width / 2);
-                float y = platformSlope * x + platformIntercept;
-
-                if ((MiniMath.isBetween(y, position.y, lastPosition.y) &&
-                        MiniMath.isBetween(x, platform.getStartPoint().x, platform.getEndPoint().x) &&
-                        MiniMath.isBetween(y, platform.getStartPoint().y, platform.getEndPoint().y))) {
-                    setDestroyed(true);
-                }
-            }
+        if (hasPlatformCollision(object)) {
+            setDestroyed(true);
         }
     }
 
