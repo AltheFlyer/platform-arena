@@ -20,4 +20,8 @@ public abstract class MobileEntity extends GameEntity {
 
     public abstract void move(float delta);
 
+    public void changePosition(Vector2 displacement) {
+        position.add(displacement);
+        hitbox.setPosition(position);
+    }
 }

@@ -38,6 +38,8 @@ public abstract class GameEntity implements Collidable {
 
     public abstract void act(float delta);
 
+    public void destroy() {}
+
     /**
      * [draw]
      * draws the entity
@@ -47,6 +49,7 @@ public abstract class GameEntity implements Collidable {
 
     public void setHitbox(Rectangle hitbox) {
         this.hitbox = hitbox;
+        position = new Vector2(hitbox.x, hitbox.y);
     }
 
     public Rectangle getHitbox() {

@@ -150,7 +150,7 @@ public abstract class Player extends Mob {
 
         walkAngle = 0;
 
-        locations.add(position);
+        locations.add(new Vector2(position));
     }
 
     @Override

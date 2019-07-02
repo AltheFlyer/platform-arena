@@ -1,53 +1,44 @@
-package game.arena.platform.entities.constructs;
+package game.arena.platform.entities.enemies;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import game.arena.platform.entities.GameEntity;
-import game.arena.platform.entities.MobileEntity;
-import game.arena.platform.entities.projectiles.Projectile;
 import game.arena.platform.screen.Level;
 import game.arena.platform.terrain.Platform;
 import game.arena.platform.utils.Collidable;
 import game.arena.platform.utils.MiniMath;
 
 /**
- * [Cauldron]
- * A cauldron object, which can be created by the Witch Player
+ * [WalkerEnemy]
+ * A simple enemy with the ability to walk towards the player
  * @version 1.0
  * @author Allen Liu
  * @since July 1, 2019
  */
-public class Cauldron extends MobileEntity {
+public class WalkerEnemy extends Enemy {
 
-    private float timer;
-    private final float MAX_TIME = 15f;
-    private int power;
-
-    private final float gravity = 1100f;
-    private Vector2 velocity;
-
+    private final float GRAVITY = 1100;
     private boolean isGrounded;
 
-    public Cauldron(Level level, Vector2 position) {
-        super(level);
-        this.position = new Vector2(position);
-        this.lastPosition =  new Vector2(position);
-        setHitbox(new Rectangle(position.x, position.y, 50, 50));
+    public WalkerEnemy(Level level, float x, float y) {
+        super(level, 40);
+        setHitbox(new Rectangle(x, y, 50, 100));
+    }
 
-        power = 0;
-        timer = 0;
-        velocity = new Vector2(0, 0);
+    @Override
+    public void move(float delta) {
+        lastPosition = new Vector2(position);
+        if (level.getPlayer().getX() < position.x - 5) {
+            changePosition(new Vector2(-200 * delta, 0));
+        } else if (level.getPlayer().getX() > position.x + 5) {
+            changePosition(new Vector2(200 * delta, 0));
+        }
     }
 
     @Override
     public void act(float delta) {
-        timer += delta;
-        if (timer > MAX_TIME) {
-            System.out.println(power);
-            setDestroyed(true);
-        }
+
     }
 
     /**
@@ -59,38 +50,16 @@ public class Cauldron extends MobileEntity {
     @Override
     public void draw(ShapeRenderer render) {
         render.set(ShapeRenderer.ShapeType.Filled);
-        render.setColor(Color.BLACK);
-
+        render.setColor(Color.RED);
         render.rect(hitbox.x, hitbox.y, hitbox.width, hitbox.height);
     }
 
     @Override
-    public void move(float delta) {
-        lastPosition = new Vector2(position);
-        if (!isGrounded) {
-            velocity.y -= gravity * delta;
-            changePosition(new Vector2(0, velocity.y * delta));
-        } else {
-            velocity.y = 0;
-        }
-
-        if (position.y < 0) {
-            setPosition(position.x, 0);
-            isGrounded = true;
-        }
-    }
-
-    @Override
     public void collide(Collidable object) {
-        if (object instanceof Projectile) {
-            Projectile p = (Projectile) object;
-            if (p.getHitbox().overlaps(hitbox)) {
-                p.setDestroyed(true);
-                power++;
-                timer += 2;
-            }
-        }
         if (object instanceof Platform) {
+            //Check if player was above the platform previously
+            //Done by intersection of line
+
             if (position.y <= lastPosition.y) {
                 Platform platform = (Platform) object;
                 float platformSlope = (platform.getEndPoint().y - platform.getStartPoint().y) / (platform.getEndPoint().x - platform.getStartPoint().x);
@@ -103,10 +72,8 @@ public class Cauldron extends MobileEntity {
                         MiniMath.isBetween(x, platform.getStartPoint().x, platform.getEndPoint().x) &&
                         MiniMath.isBetween(y, platform.getStartPoint().y, platform.getEndPoint().y))) {
                     setPosition(position.x, y);
-                    isGrounded = true;
                 }
             }
         }
     }
-
 }

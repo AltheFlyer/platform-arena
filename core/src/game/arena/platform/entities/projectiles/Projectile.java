@@ -37,11 +37,10 @@ public class Projectile extends MobileEntity {
 
     @Override
     public void move(float delta) {
-        lastPosition = position;
+        lastPosition = new Vector2(position);
         Vector2 preModVelocity = new Vector2(velocity);
 
-        position.add(velocity.scl(delta));
-        hitbox.setPosition(position);
+        changePosition(velocity.scl(delta));
 
         velocity = preModVelocity;
     }

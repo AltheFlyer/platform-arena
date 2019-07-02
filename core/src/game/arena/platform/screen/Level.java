@@ -16,6 +16,7 @@ import game.arena.platform.ArenaGameWindow;
 import game.arena.platform.entities.GameEntity;
 import game.arena.platform.entities.MobileEntity;
 import game.arena.platform.entities.enemies.Enemy;
+import game.arena.platform.entities.enemies.WalkerEnemy;
 import game.arena.platform.entities.players.Player;
 import game.arena.platform.entities.players.WitchPlayer;
 import game.arena.platform.entities.projectiles.Projectile;
@@ -92,6 +93,7 @@ public class Level implements Screen {
         platforms.add(new Platform(new Vector2(100, 320), new Vector2(500, 300)));
         platforms.add(new Platform(new Vector2(100, 100), new Vector2(500, 120)));
 
+        enemies.add(new WalkerEnemy(this, 100, 100));
 
         for (int i = 0; i < platforms.size; ++i) {
             System.out.println(platforms.get(i).getAngle() / MathUtils.PI);
@@ -147,12 +149,13 @@ public class Level implements Screen {
             player.setPosition(player.getX(), LEVEL_HEIGHT - player.getHitbox().height);
         }
 
-        runEntityActions(delta);
-
-        manageCollections();
         manageCollisions();
 
+        runEntityActions(delta);
+
         draw();
+
+        manageCollections();
     }
 
     /**
@@ -250,6 +253,7 @@ public class Level implements Screen {
         while (iter.hasNext()) {
             GameEntity e = (GameEntity) iter.next();
             if (e.isDestroyed()) {
+                e.destroy();
                 iter.remove();
             }
         }
@@ -284,6 +288,10 @@ public class Level implements Screen {
 
     public Vector3 getMouse() {
         return mouse;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     /**
